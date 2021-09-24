@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portada</title>
+
+  <!-- Bootstrap styling and responsive design import (both CSS and JS libraries required)-->
+  <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+  <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Import of my own style sheet -->
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body class="pt-3">
+
+<header>
+  <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="portrait.html">INICIO</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+              aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="eventForm.html">Informar Evento</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="eventList.html">Listado de Eventos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="statistics.html">Estadísticas</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="container my-5">
+  <div class="row justify-content-between">
+    <div class="col col-md-4">
+      <h4>Bienvenido</h4>
+      <div class="border border-dark border-2 rounded p-3">
+        Aquí podrás encontrar información de eventos de venta de comida de distintos emprendedores.
+        <hr>
+        La portada incluye los últimos 5 eventos que han sido informados, con toda la información
+        pertinente de su realización.
+        <hr>
+        Si eres un emprendedor en el rubro gastronómico y deseas informar tu evento a realizar, por favor dirígete a
+        la pestaña de <span class="fw-bold">Informar Evento</span> y completa el formulario con la información
+        solicitada.
+        <hr>
+        El detalle de todos los eventos informados se encuentra en la pestaña
+        <span class="fw-bold">Listado de Eventos</span>.
+        <hr>
+        Si te interesan las estadísticas asociadas a los eventos informados, no dudes en visitar la pestaña
+        <span class="fw-bold">Estadísticas</span>.
+      </div>
+    </div>
+
+
+    <div class="col col-md-7 mt-3 mt-md-0">
+      <h4>Últimos eventos agregados</h4>
+      <div class="border border-dark border-5 rounded table-responsive-lg">
+        <table class="table table-hover">
+          <thead>
+          <tr class="align-middle">
+            <th scope="col">Fecha - Hora Inicio</th>
+            <th scope="col">Fecha - Hora Término</th>
+            <th scope="col">Comuna</th>
+            <th scope="col">Sector</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Foto</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="align-middle">
+            <td>2021-09-07 - 12:00</td>
+            <td>2021-09-07 - 14:00</td>
+            <td>La Florida</td>
+            <td>Vickuña Mackena</td>
+            <td>Chilena: <br>empanadas <br>pino, queso</td>
+            <td>
+              <img src="https://t2.rg.ltmcdn.com/es/images/7/5/6/img_empanada_chilena_de_carne_11657_600.jpg"
+                   class="img-fluid portrait-img" alt="empanadas">
+            </td>
+          </tr>
+          <tr class="align-middle">
+            <td>2021-09-06 - 17:00</td>
+            <td>2021-09-06 - 21:00</td>
+            <td>Santiago</td>
+            <td>Plaza</td>
+            <td>Italiana: <br>Pizza</td>
+            <td>
+              <img src="https://carolinarice.com/wp-content/uploads/2020/04/Rice-Pizza-Crust.jpg"
+                   class="img-fluid portrait-img" alt="pizza">
+            </td>
+          </tr>
+          <tr class="align-middle">
+            <td>2021-09-04 - 12:00</td>
+            <td>2021-09-04 - 15:00</td>
+            <td>Ñuñoa</td>
+            <td>Estadio Nacional</td>
+            <td>India: <br>Pollo Curry</td>
+            <td>
+              <img src="https://www.divinacocina.es/wp-content/uploads/pollo-al-curry-cazuela-arroz.jpg"
+                   class="img-fluid portrait-img" alt="pollo al curry">
+            </td>
+          </tr>
+          <tr class="align-middle">
+            <td>2021-09-12 - 17:00</td>
+            <td>2021-09-12 - 20:00</td>
+            <td>Puerto Natales</td>
+            <td>Polideportivo Municipal</td>
+            <td>Casera: <br>Milcaos</td>
+            <td>
+              <img src="https://www.comidastipicaschilenas.com/wp-content/uploads/2020/04/receta-de-milcao.jpg"
+                   class="img-fluid portrait-img" alt="milcaos">
+            </td>
+          </tr>
+          <tr class="align-middle">
+            <td>2021-09-17 - 21:00</td>
+            <td>2021-09-17 - 23:50</td>
+            <td>Punta Arenas</td>
+            <td>Zona Franca</td>
+            <td>Chilena: <br>Terremoto, Chicha</td>
+            <td>
+              <img src="https://media.cnnchile.com/2018/09/terremoto-y-chicha-trago-0409-740x430.jpg"
+                   class="img-fluid portrait-img" alt="pollo al curry">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Evento</title>
+
+  <!-- Bootstrap styling and responsive design import (both CSS and JS libraries required) -->
+  <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+  <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS files for form control -->
+  <script src="../static/js/event_form_region_selector.js"></script>
+  <script src="../static/js/event_form_social_network_selector.js"></script>
+  <script src="../static/js/event_form_dates.js"></script>
+  <script src="../static/js/event_form_food_type.js"></script>
+  <script src="../static/js/event_form_imgs.js"></script>
+</head>
+<body class="pt-3">
+
+<header>
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="portrait.html">INICIO</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+              aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="eventForm.html">Informar Evento</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="eventList.html">Listado de Eventos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="statistics.html">Estadísticas</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="container my-5 mx-auto">
+
+  <form action="" method="post" class="needs-validation" onsubmit="return form_validator()">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-sm-9 col-md-7 col-lg-6 bg-light bg-gradient">
+        <div class="form-floating my-3">
+          <select class="form-select" id="region" name="region"></select>
+          <label for="region" class="form-label">Región</label>
+        </div>
+
+        <div class="form-floating my-3">
+          <select class="form-select" id="comuna" name="comuna"></select>
+          <label for="comuna" class="form-label">Comuna</label>
+        </div>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="sector" placeholder="Beauchef 851"
+                 name="sector" aria-describedby="sectorHelp" size="100">
+          <label for="sector" class="form-label">Sector</label>
+          <div id="sectorHelp" class="form-text">
+            Máximo de 100 caracteres.
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="nombre" placeholder="John Doe"
+                 name="nombre" aria-describedby="nameHelp" size="100">
+          <label for="nombre" class="form-label">Nombre</label>
+          <div id="nameHelp" class="form-text">
+            Máximo 200 caracteres.
+          </div>
+        </div>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="email" placeholder="email@email.com"
+                 name="email" aria-describedby="emailHelp" size="100">
+          <label for="email" class="form-label">Email</label>
+          <div id="emailHelp" class="form-text">
+            Por ejemplo: usuario@email.com
+          </div>
+        </div>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="celular" placeholder="987654321"
+                 name="celular" aria-describedby="cellphoneHelp" size="15">
+          <label for="celular" class="form-label">Celular</label>
+          <div id="cellphoneHelp" class="form-text">
+            Por ejemplo: +56 9 87654321
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="form-floating my-3">
+          <select class="form-select" id="red-social" name="red-social"></select>
+          <label for="red-social" class="form-label">Redes Sociales</label>
+        </div>
+
+        <div class="input-group my-3 d-none" id="sn_input_0">
+          <span class="input-group-text" id="twitter_adddon">Twitter</span>
+          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
+                 aria-describedby="twitter_adddon">
+        </div>
+
+        <div class="input-group my-3 d-none" id="sn_input_1">
+          <span class="input-group-text" id="instagram_adddon">Instagram</span>
+          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
+                 aria-describedby="instagram_adddon">
+        </div>
+
+        <div class="input-group my-3 d-none" id="sn_input_2">
+          <span class="input-group-text" id="facebook_adddon">Facebook</span>
+          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
+                 aria-describedby="facebook_adddon">
+        </div>
+
+        <div class="input-group my-3 d-none" id="sn_input_3">
+          <span class="input-group-text" id="tiktok_adddon">TikTok</span>
+          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
+                 aria-describedby="tiktok_adddon">
+        </div>
+
+        <div class="input-group my-3 d-none" id="sn_input_4">
+          <span class="input-group-text" id="other_adddon">Otra</span>
+          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
+                 aria-describedby="other_adddon">
+        </div>
+
+        <hr>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="dia-hora-inicio" placeholder="AAAA-MM-DD HH:MM"
+                 name="dia-hora-inicio" aria-describedby="startdateHelp" size="20">
+          <label for="dia-hora-inicio" class="form-label">Fecha y hora de inicio</label>
+          <div id="startdateHelp" class="form-text">
+            Formato válido AAAA-MM-DD HH:MM
+          </div>
+        </div>
+
+        <div class="form-floating my-3">
+          <input type="text" class="form-control" id="dia-hora-termino" placeholder="AAAA-MM-DD HH:MM"
+                 name="dia-hora-termino" aria-describedby="enddateHelp" size="20">
+          <label for="dia-hora-termino" class="form-label">Fecha y hora de término</label>
+          <div id="enddateHelp" class="form-text">
+            Formato válido AAAA-MM-DD HH:MM
+          </div>
+        </div>
+
+        <div class="form-floating mb-3">
+          <textarea class="form-control h-100" placeholder="Descripción del evento a realizar" id="descripcion-evento"
+                    maxlength="1000" name="descripcion-evento" aria-describedby="descriptionHelp" rows="10"
+                    cols="50"></textarea>
+          <label for="descripcion-evento">Descripción del Evento</label>
+          <div id="descriptionHelp" class="form-text">
+            Máximo 1000 caracteres.
+          </div>
+        </div>
+
+        <div class="form-floating my-3">
+          <select class="form-select" id="tipo-comida" name="region"></select>
+          <label for="tipo-comida" class="form-label">Tipo de comida</label>
+        </div>
+
+        <div class="my-3" id="pictures-group">
+          <input class="form-control" type="file" id="formFile" name="foto-comida" aria-describedby="nameHelpFile">
+          <div id="nameHelpFile" class="form-text">
+            Soporte de .jpg .jpeg .png
+          </div>
+        </div>
+
+        <div class="my-3">
+          <button class="btn btn-success" id="add-img-btn">Agregar otra foto</button>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between my-3">
+          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="reset" class="btn btn-warning" onclick="clear_error_div()">Borrar Todo</button>
+        </div>
+
+      </div>
+      <div class="col"></div>
+    </div>
+  </form>
+
+</main>
+
+</body>
+</html>
