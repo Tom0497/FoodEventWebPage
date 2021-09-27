@@ -1,39 +1,6 @@
 [
   {
-    "region": "Arica y Parinacota",
-    "region_number": "XV",
-    "region_iso_3166_2": "CL-AP",
-    "provincias": [
-      {
-        "name": "Arica",
-        "comunas": [
-          {
-            "name": "Arica",
-            "code": "15101"
-          },
-          {
-            "name": "Camarones",
-            "code": "15102"
-          }
-        ]
-      },
-      {
-        "name": "Parinacota",
-        "comunas": [
-          {
-            "name": "Putre",
-            "code": "15201"
-          },
-          {
-            "name": "General Lagos",
-            "code": "15202"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "region": "Tarapacá",
+    "region": "Región de Tarapacá",
     "region_number": "I",
     "region_iso_3166_2": "CL-TA",
     "provincias": [
@@ -78,7 +45,7 @@
     ]
   },
   {
-    "region": "Antofagasta",
+    "region": "Región de Antofagasta",
     "region_number": "II",
     "region_iso_3166_2": "CL-AN",
     "provincias": [
@@ -136,7 +103,7 @@
     ]
   },
   {
-    "region": "Atacama",
+    "region": "Región de Atacama",
     "region_number": "III",
     "region_iso_3166_2": "CL-AT",
     "provincias": [
@@ -194,7 +161,7 @@
     ]
   },
   {
-    "region": "Coquimbo",
+    "region": "Región de Coquimbo",
     "region_number": "IV",
     "region_iso_3166_2": "CL-CO",
     "provincias": [
@@ -276,7 +243,7 @@
     ]
   },
   {
-    "region": "Valparaíso",
+    "region": "Región de Valparaíso",
     "region_number": "V",
     "region_iso_3166_2": "CL-VS",
     "provincias": [
@@ -776,112 +743,6 @@
     ]
   },
   {
-    "region": "Región de Ñuble",
-    "region_number": "XVI",
-    "region_iso_3166_2": "CL-NB",
-    "provincias": [
-      {
-        "name": "Diguillín",
-        "comunas": [
-          {
-            "name": "Chillán",
-            "code": "16101"
-          },
-          {
-            "name": "Chillán Viejo",
-            "code": "16102"
-          },
-          {
-            "name": "Quillón",
-            "code": "16103"
-          },
-          {
-            "name": "Bulnes",
-            "code": "16104"
-          },
-          {
-            "name": "San Ignacio",
-            "code": "16105"
-          },
-          {
-            "name": "El Carmen",
-            "code": "16106"
-          },
-          {
-            "name": "Pinto",
-            "code": "16107"
-          },
-          {
-            "name": "Pemuco",
-            "code": "16108"
-          },
-          {
-            "name": "Yungay",
-            "code": "16109"
-          }
-        ]
-      },
-      {
-        "name": "Itata",
-        "comunas": [
-          {
-            "name": "Quirihue",
-            "code": "16201"
-          },
-          {
-            "name": "Cobquecura",
-            "code": "16202"
-          },
-          {
-            "name": "Ninhue",
-            "code": "16203"
-          },
-          {
-            "name": "Treguaco",
-            "code": "16204"
-          },
-          {
-            "name": "Coelemu",
-            "code": "16205"
-          },
-          {
-            "name": "Portezuelo",
-            "code": "16206"
-          },
-          {
-            "name": "Ránqui",
-            "code": "16207"
-          }
-        ]
-      },
-      {
-        "name": "Punilla",
-        "comunas": [
-          {
-            "name": "San Carlos",
-            "code": "16301"
-          },
-          {
-            "name": "Ñiquén",
-            "code": "16302"
-          },
-          {
-            "name": "Coihueco",
-            "code": "16303"
-          },
-          {
-            "name": "San Fabián",
-            "code": "16304"
-          },
-          {
-            "name": "San Nico",
-            "code": "16305"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "region": "Región del Biobío",
     "region_number": "VIII",
     "region_iso_3166_2": "CL-BI",
@@ -1181,71 +1042,6 @@
     ]
   },
   {
-    "region": "Región de los Ríos",
-    "region_number": "XIV",
-    "region_iso_3166_2": "CL-LR",
-    "provincias": [
-      {
-        "name": "Valdivia",
-        "comunas": [
-          {
-            "name": "Valdivia",
-            "code": "14101"
-          },
-          {
-            "name": "Corral",
-            "code": "14102"
-          },
-          {
-            "name": "Lanco",
-            "code": "14103"
-          },
-          {
-            "name": "Los Lagos",
-            "code": "14104"
-          },
-          {
-            "name": "Máfil",
-            "code": "14105"
-          },
-          {
-            "name": "Mariquina",
-            "code": "14106"
-          },
-          {
-            "name": "Paillaco",
-            "code": "14107"
-          },
-          {
-            "name": "Panguipulli",
-            "code": "14108"
-          }
-        ]
-      },
-      {
-        "name": "Ranco",
-        "comunas": [
-          {
-            "name": "La Unión",
-            "code": "14201"
-          },
-          {
-            "name": "Futrono",
-            "code": "14202"
-          },
-          {
-            "name": "Lago Ranco",
-            "code": "14203"
-          },
-          {
-            "name": "Río Bueno",
-            "code": "14204"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "region": "Región de los Lagos",
     "region_number": "X",
     "region_iso_3166_2": "CL-LL",
@@ -1393,7 +1189,7 @@
     ]
   },
   {
-    "region": "Región Aisén del Gral. Carlos Ibañez del Campo",
+    "region": "Región de Aisén del Gral. Carlos Ibañez del Campo",
     "region_number": "XI",
     "region_iso_3166_2": "CL-AI",
     "provincias": [
@@ -1770,6 +1566,210 @@
           {
             "name": "Peñaflor",
             "code": "13605"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "region": "Región de los Ríos",
+    "region_number": "XIV",
+    "region_iso_3166_2": "CL-LR",
+    "provincias": [
+      {
+        "name": "Valdivia",
+        "comunas": [
+          {
+            "name": "Valdivia",
+            "code": "14101"
+          },
+          {
+            "name": "Corral",
+            "code": "14102"
+          },
+          {
+            "name": "Lanco",
+            "code": "14103"
+          },
+          {
+            "name": "Los Lagos",
+            "code": "14104"
+          },
+          {
+            "name": "Máfil",
+            "code": "14105"
+          },
+          {
+            "name": "Mariquina",
+            "code": "14106"
+          },
+          {
+            "name": "Paillaco",
+            "code": "14107"
+          },
+          {
+            "name": "Panguipulli",
+            "code": "14108"
+          }
+        ]
+      },
+      {
+        "name": "Ranco",
+        "comunas": [
+          {
+            "name": "La Unión",
+            "code": "14201"
+          },
+          {
+            "name": "Futrono",
+            "code": "14202"
+          },
+          {
+            "name": "Lago Ranco",
+            "code": "14203"
+          },
+          {
+            "name": "Río Bueno",
+            "code": "14204"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "region": "Región de Arica y Parinacota",
+    "region_number": "XV",
+    "region_iso_3166_2": "CL-AP",
+    "provincias": [
+      {
+        "name": "Arica",
+        "comunas": [
+          {
+            "name": "Arica",
+            "code": "15101"
+          },
+          {
+            "name": "Camarones",
+            "code": "15102"
+          }
+        ]
+      },
+      {
+        "name": "Parinacota",
+        "comunas": [
+          {
+            "name": "Putre",
+            "code": "15201"
+          },
+          {
+            "name": "General Lagos",
+            "code": "15202"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "region": "Región de Ñuble",
+    "region_number": "XVI",
+    "region_iso_3166_2": "CL-NB",
+    "provincias": [
+      {
+        "name": "Diguillín",
+        "comunas": [
+          {
+            "name": "Chillán",
+            "code": "16101"
+          },
+          {
+            "name": "Chillán Viejo",
+            "code": "16102"
+          },
+          {
+            "name": "Quillón",
+            "code": "16103"
+          },
+          {
+            "name": "Bulnes",
+            "code": "16104"
+          },
+          {
+            "name": "San Ignacio",
+            "code": "16105"
+          },
+          {
+            "name": "El Carmen",
+            "code": "16106"
+          },
+          {
+            "name": "Pinto",
+            "code": "16107"
+          },
+          {
+            "name": "Pemuco",
+            "code": "16108"
+          },
+          {
+            "name": "Yungay",
+            "code": "16109"
+          }
+        ]
+      },
+      {
+        "name": "Itata",
+        "comunas": [
+          {
+            "name": "Quirihue",
+            "code": "16201"
+          },
+          {
+            "name": "Cobquecura",
+            "code": "16202"
+          },
+          {
+            "name": "Ninhue",
+            "code": "16203"
+          },
+          {
+            "name": "Treguaco",
+            "code": "16204"
+          },
+          {
+            "name": "Coelemu",
+            "code": "16205"
+          },
+          {
+            "name": "Portezuelo",
+            "code": "16206"
+          },
+          {
+            "name": "Ránqui",
+            "code": "16207"
+          }
+        ]
+      },
+      {
+        "name": "Punilla",
+        "comunas": [
+          {
+            "name": "San Carlos",
+            "code": "16301"
+          },
+          {
+            "name": "Ñiquén",
+            "code": "16302"
+          },
+          {
+            "name": "Coihueco",
+            "code": "16303"
+          },
+          {
+            "name": "San Fabián",
+            "code": "16304"
+          },
+          {
+            "name": "San Nico",
+            "code": "16305"
           }
         ]
       }
