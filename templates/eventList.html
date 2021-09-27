@@ -9,6 +9,9 @@
   <!-- Bootstrap styling and responsive design import (both CSS and JS libraries required)-->
   <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
   <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Import of my own style sheet -->
+  <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body class="pt-3">
 
@@ -36,6 +39,196 @@
     </div>
   </nav>
 </header>
+
+<main class="container my-5 mx-auto">
+
+  <div class="row justify-content-between">
+    <div class="col"></div>
+    <div class="col col-md-9 mt-3">
+      <h4>Últimos eventos agregados</h4>
+      <div class="border border-dark border-5 rounded table-responsive-lg">
+        <table class="table table-hover">
+          <thead>
+          <tr class="align-middle">
+            <th scope="col">Fecha - Hora Inicio</th>
+            <th scope="col">Fecha - Hora Término</th>
+            <th scope="col">Comuna</th>
+            <th scope="col">Sector</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Nombre Contacto</th>
+            <th scope="col">Foto</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="align-middle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <td>2021-09-07 - 12:00</td>
+            <td>2021-09-07 - 14:00</td>
+            <td>La Florida</td>
+            <td>Vickuña Mackena</td>
+            <td>Chilena: <br>empanadas <br>pino, queso</td>
+            <td>Tomás Saldivia</td>
+            <td>
+              <img src="https://t2.rg.ltmcdn.com/es/images/7/5/6/img_empanada_chilena_de_carne_11657_600.jpg"
+                   class="img-fluid portrait-img" alt="empanadas">
+            </td>
+          </tr>
+          <tr class="align-middle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <td>2021-09-06 - 17:00</td>
+            <td>2021-09-06 - 21:00</td>
+            <td>Santiago</td>
+            <td>Plaza</td>
+            <td>Italiana: <br>Pizza</td>
+            <td>Tomás Saldivia</td>
+            <td>
+              <img src="https://carolinarice.com/wp-content/uploads/2020/04/Rice-Pizza-Crust.jpg"
+                   class="img-fluid portrait-img" alt="pizza">
+            </td>
+          </tr>
+          <tr class="align-middle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <td>2021-09-04 - 12:00</td>
+            <td>2021-09-04 - 15:00</td>
+            <td>Ñuñoa</td>
+            <td>Estadio Nacional</td>
+            <td>India: <br>Pollo Curry</td>
+            <td>Tomás Saldivia</td>
+            <td>
+              <img src="https://www.divinacocina.es/wp-content/uploads/pollo-al-curry-cazuela-arroz.jpg"
+                   class="img-fluid portrait-img" alt="pollo al curry">
+            </td>
+          </tr>
+          <tr class="align-middle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <td>2021-09-12 - 17:00</td>
+            <td>2021-09-12 - 20:00</td>
+            <td>Puerto Natales</td>
+            <td>Polideportivo Municipal</td>
+            <td>Casera: <br>Milcaos</td>
+            <td>Tomás Saldivia</td>
+            <td>
+              <img src="https://www.comidastipicaschilenas.com/wp-content/uploads/2020/04/receta-de-milcao.jpg"
+                   class="img-fluid portrait-img" alt="milcaos">
+            </td>
+          </tr>
+          <tr class="align-middle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <td>2021-09-17 - 21:00</td>
+            <td>2021-09-17 - 23:50</td>
+            <td>Punta Arenas</td>
+            <td>Zona Franca</td>
+            <td>Chilena: <br>Terremoto, Chicha</td>
+            <td>Tomás Saldivia</td>
+            <td>
+              <img src="https://media.cnnchile.com/2018/09/terremoto-y-chicha-trago-0409-740x430.jpg"
+                   class="img-fluid portrait-img" alt="pollo al curry">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Detalles del evento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+
+              <h4 class="mb-3">¿Dónde?</h4>
+              <p>
+                <span class="fw-bold">Región:</span>
+                XII Región de Magallanes y Antártica Chilena
+              </p>
+              <p>
+                <span class="fw-bold">Comuna:</span>
+                Puerto Natales
+              </p>
+              <p>
+                <span class="fw-bold">Sector:</span>
+                Polideportivo Municipal
+              </p>
+
+              <hr>
+
+              <h4 class="mb-3">¿Quién Ofrece?</h4>
+              <p>
+                <span class="fw-bold">Nombre:</span>
+                Tomás Saldivia Astudillo
+              </p>
+              <p>
+                <span class="fw-bold">Email:</span>
+                tomas.saldivia@ug.uchile.cl
+              </p>
+              <p>
+                <span class="fw-bold">Celular:</span>
+                +56 9 87654321
+              </p>
+              <p>
+                <span class="fw-bold">Redes Sociales:</span>
+              <ul>
+                <li>Facebook: <a href="https://www.facebook.com/DonaldTrump/" target="_blank">Perfil</a></li>
+                <li>Twitter: <a href="https://twitter.com/donaldtrump" target="_blank">Handle</a></li>
+              </ul>
+
+              <hr>
+
+              <h4 class="mb-3">¿Cuándo y qué se ofrece?</h4>
+              <p>
+                <span class="fw-bold">Día y hora de inicio:</span>
+                2021-09-12 - 17:00
+              </p>
+              <p>
+                <span class="fw-bold">Día y hora de término:</span>
+                2021-09-12 - 20:00
+              </p>
+              <p>
+                <span class="fw-bold">Descripción:</span>
+                El evento publicitado congregará a gran parte de la comunidad local en un ambiente propicio para
+                el intercambio cultural, musical y gastronómico, siendo una gran oportunidad para probar la gran
+                variedad
+                de platos típicos caseros como Milcaos por ejemplo.
+              </p>
+              <p>
+                <span class="fw-bold">Tipo:</span>
+                Comida Casera
+              </p>
+              <div class="col mx-auto">
+                <img src="https://www.comidastipicaschilenas.com/wp-content/uploads/2020/04/receta-de-milcao.jpg"
+                     class="img-fluid event-list-img" alt="milcaos" data-bs-toggle="modal"
+                     data-bs-target="#exampleModal1">
+              </div>
+
+              <div class="modal fade" id="exampleModal1" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Foto de Milcaos</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <img src="https://www.comidastipicaschilenas.com/wp-content/uploads/2020/04/receta-de-milcao.jpg"
+                           class="img-fluid event-list-img-clicked" alt="milcaos">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
 
 </body>
 </html>

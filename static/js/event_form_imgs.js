@@ -38,7 +38,7 @@ window.addEventListener('load', (event) => {
     if (img_count < 5) {
       images_group_div.innerHTML +=
           '<div class="input-group my-1">\n' +
-          '            <input class="form-control" type="file" id="formFile" name="foto-comida"\n' +
+          '            <input class="form-control" type="file" name="foto-comida"\n' +
           '                   aria-describedby="pictureHelp">\n' +
           '            <span class="input-group-text">\n' +
           `              <button type="button" class="btn-close ${btn_close_class}" aria-label="Close"></button>\n` +
