@@ -37,20 +37,21 @@ fetch('../static/json/socialNetworks.json')
         let sn_name_lc = sn_name.toLowerCase();
         let sn_name_post = `${sn_name_lc}_link`;
         let sn_addon_id = `${sn_name_lc}_addon`;
+        let sn_input_id = `${sn_name_lc}-input`;
 
         // element is added only if it hasn't already
-        if (!sn_added_inputs.includes(sn_name_post)) {
+        if (!sn_added_inputs.includes(sn_input_id)) {
           sn_div.innerHTML +=
-              `<div class="input-group my-1" id="${sn_name_post}">\n` +
+              `<div class="input-group my-1" id="${sn_input_id}">\n` +
               `  <span class="input-group-text" id="${sn_addon_id}">${sn_name}</span>\n` +
               '  <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"\n' +
-              `         aria-describedby="${sn_addon_id}" name="${sn_name_post}">\n` +
+              `         aria-describedby="${sn_addon_id}" name="${sn_name_post}" id="${sn_name_post}">\n` +
               '  <span class="input-group-text">\n' +
               `    <button type="button" class="btn-close ${btn_close_class}" aria-label="Close"></button>\n` +
               '  </span>\n' +
               '</div>';
 
-          sn_added_inputs.push(sn_name_post);
+          sn_added_inputs.push(sn_input_id);
         }
       })
 
