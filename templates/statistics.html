@@ -49,21 +49,44 @@
 <main class="container my-5 mx-auto">
 
   <!-- Create a div where the graph will take place -->
-  <div class="row">
-    <div class="col-sm-12 col-md-6">
-      <h4 class="text-center"> Gráfico de Línea</h4>
-      <div id="line-graph"></div>
-    </div>
-    <div class="col-sm-12 col-md-6">
-      <h4 class="text-center"> Gráfico Circular</h4>
-      <div id="circular-graph"></div>
-    </div>
-  </div>
-
-  <div class="row">
+  <div class="row my-5">
     <div class="col"></div>
     <div class="col-sm-12 col-md-6">
-      <h4 class="text-center"> Gráfico de Barras</h4>
+      <h4 class="text-center">Cantidad de eventos por día</h4>
+      <p class="border border-4">
+        El gráfico de línea muestra la cantidad de eventos que hay para cada día de la semana, según los
+        datos reportados a la plataforma.
+      </p>
+      <div id="line-graph"></div>
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <hr>
+
+  <div class="row my-5">
+    <div class="col"></div>
+    <div class="col-sm-12 col-md-6">
+      <h4 class="text-center"> Cantidad de eventos por tipo</h4>
+      <p class="border border-4">
+        El gráfico circular muestra una agrupación por tipo de los eventos que se han registrado en la
+        plataforma.
+      </p>
+      <div id="circular-graph"></div>
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <hr>
+
+  <div class="row my-5">
+    <div class="col"></div>
+    <div class="col-sm-12 col-md-6">
+      <h4 class="text-center"> Horario de eventos por mes</h4>
+      <p class="border border-4">
+        El gráfico de barras muestra la distribución horaria de los eventos agrupados por mes, se divide el día en
+        tres categorías, eventos que inician en la mañana (rojo), al mediodía (azul) y en la tarde (verde).
+      </p>
       <div id="bar-chart"></div>
     </div>
     <div class="col"></div>

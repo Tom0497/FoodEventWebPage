@@ -16,7 +16,7 @@ function circular_plot() {
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
   // Create dummy data
-  const data = {a: 9, b: 20, c: 30, d: 8, e: 12}
+  const data = {chilena: 13, casera: 12, italiana: 11, vegetariana: 12, otro: 4}
 
   // set the color scale
   const color = d3.scaleOrdinal()
@@ -29,19 +29,36 @@ function circular_plot() {
       })
   const data_ready = pie(Object.entries(data))
 
+  // shape helper to build arcs:
+  const arcGenerator = d3.arc()
+      .innerRadius(0)
+      .outerRadius(radius);
+
   // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
   svg
-      .selectAll('whatever')
+      .selectAll('mySlices')
       .data(data_ready)
       .join('path')
-      .attr('d', d3.arc()
-          .innerRadius(0)
-          .outerRadius(radius)
-      )
+      .attr('d', arcGenerator)
       .attr('fill', function (d) {
         return (color(d.data[1]))
       })
       .attr("stroke", "black")
-      .style("stroke-width", "2px")
-      .style("opacity", 0.7)
+      .style("stroke-width", "4px")
+      .style("opacity", 0.7);
+
+  // Now add the annotation. Use the centroid method to get the best coordinates
+  svg
+      .selectAll('mySlices')
+      .data(data_ready)
+      .join('text')
+      .text(function (d) {
+        return d.data[0] + ` [${d.data[1]}]`
+      })
+      .attr("transform", function (d) {
+        return `translate(${arcGenerator.centroid(d)})`
+      })
+      .style("text-anchor", "middle")
+      .style("font-size", 17)
+
 }
