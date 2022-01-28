@@ -1,7 +1,3 @@
-/**
- *
- */
-
 import {DateTime} from "../../vendor/luxon/luxon.min.js"
 
 
@@ -59,12 +55,12 @@ export const queryId = (idStr) => document.getElementById(idStr)
 
 
 /**
- * Async function to fetch a JSON file with an specified path passed as a string param.
+ * Async function to fetch a JSON file with a specified path passed as a string param.
  * <br>
  * @param jsonPath{string} - path to JSON file
  * @returns {Promise<any>} - fetch promise response
  */
-export async function fetchJSON(jsonPath) {
+export const fetchJSON = async (jsonPath) => {
   const response = await fetch(jsonPath);
   if (!response.ok) {
     const message = `An error has occured: ${response.status}`;
@@ -79,7 +75,7 @@ export async function fetchJSON(jsonPath) {
  * <br>
  * @returns {Promise<*[][]>} - An array for regions and one for comunas, as a Promise.
  */
-export async function getRegionsAndComunas() {
+export const getRegionsAndComunas = async () => {
   const regionesJSON = await fetchJSON('../static/json/chileData.json')
   let regionsOutput = []
   let comunasOutput = []
@@ -103,11 +99,11 @@ export async function getRegionsAndComunas() {
 
 
 /**
- * Async function to fetcch food types from JSON file.
+ * Async function to fetch food types from JSON file.
  * <br>
  * @returns {Promise<*[]>} - Array of food types as a Promise.
  */
-export async function getFoodTypes() {
+export const getFoodTypes = async () => {
   const foodTypesJSON = await fetchJSON('../static/json/foodTypes.json')
   let foodTypes = []
 
@@ -118,6 +114,24 @@ export async function getFoodTypes() {
 
   return foodTypes
 }
+
+
+/**
+ * Async function to fetch social networks metadata from JSON file.
+ * <br>
+ * @returns {Promise<*[]>} - Array of social networks names as a Promise.
+ */
+export const getSocialNetworks = async () => {
+  const socialNetworksJSON = await fetchJSON('../static/json/socialNetworks.json')
+  let socialNetworks = []
+
+  for (const socialNetwork of socialNetworksJSON) {
+    socialNetworks.push(socialNetwork["network_name"])
+  }
+
+  return socialNetworks
+}
+
 
 /**
  * Defines default dates of start and end using current datetime as start,

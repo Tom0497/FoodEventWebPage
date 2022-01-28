@@ -95,7 +95,7 @@ export const checkImages = (imagesInputList) => {
 
 
 /**
- * Given an form's input element with type file, checks if its input
+ * Given a form's input element with type file, checks if its input
  * is an image, its size and its file extension.
  * <br>
  * @param imageInput{HTMLInputElement} - an input from a form

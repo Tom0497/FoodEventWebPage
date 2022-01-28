@@ -110,7 +110,7 @@ export const checkName = (contactName) => {
       name = contactName.value,
       minLen = 3,
       maxLen = 100
-  console.log('name:', name)
+  console.log('nombre:', name)
 
   if (!isRequired(name)) {
     showError(contactName, 'Debe ingresar un nombre de contacto.')

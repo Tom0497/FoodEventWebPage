@@ -4,11 +4,11 @@
 }
 
 .event-list-img {
-    height: 240px;
-    width: 320px;
+    max-height: 240px;
+    min-width: 320px;
 }
 
 .event-list-img-clicked {
-    height: 600px;
-    width: 800px;
+    max-height: 600px;
+    min-width: 800px;
 }

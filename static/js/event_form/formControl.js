@@ -3,9 +3,18 @@
  *    form validation for event form, as a first check on user input before sending to
  *    server for server-validation and database update.
  */
-import {debounce, defaultDates, getFoodTypes, getRegionsAndComunas, queryId, queryName} from "./utils.js"
+
+import {
+  debounce,
+  defaultDates,
+  getFoodTypes,
+  getRegionsAndComunas,
+  getSocialNetworks,
+  queryId,
+  queryName
+} from "./utils.js"
 import {regionAndComunasSelect} from "./regionSelector.js"
-import {foodTypesSelect} from "./foodType.js"
+import {foodTypesSelect} from "./foodTypeSelector.js"
 import {
   checkComuna,
   checkDescription,
@@ -19,7 +28,8 @@ import {
   checkSector
 } from "./inputCheck.js"
 import "./imageControl.js"
-import {checkImages} from "./imageControl.js";
+import {checkImages} from "./imageControl.js"
+import {checkSocialNetworks, socialNetworkSelect} from "./socialNetworkControl.js"
 
 
 /**
@@ -43,18 +53,22 @@ let eventForm = queryId('formulario'),
  * Query image input list
  * @type {NodeListOf<HTMLElement|InputFields>}
  */
-let
-    eventImages = queryName('foto-comida')
+let eventImages = queryName('foto-comida')
+
+let contactSocialNetworks = queryName('red-social')
 
 
-Promise.all([getRegionsAndComunas(), getFoodTypes()]).then(response => {
+Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()]).then(response => {
   let
       [[validRegions,
         validComunas],
-        validFoodTypes] = response
+        validFoodTypes,
+        socialNetworks] = response
 
   // display regions and comunas options
   regionAndComunasSelect(validRegions, validComunas)
+  // social networks options and control
+  socialNetworkSelect(socialNetworks)
   // display food types options
   foodTypesSelect(validFoodTypes)
   // pre-fill datetime fields with default values
@@ -80,8 +94,7 @@ Promise.all([getRegionsAndComunas(), getFoodTypes()]).then(response => {
 
 const validateForm = (validRegions, validComunas, validFoodTypes) => {
   // validate form inputs
-  const
-      isRegionValid = checkRegion(eventRegion, validRegions)
+  const isRegionValid = checkRegion(eventRegion, validRegions)
 
   const isComunaValid = isRegionValid ? checkComuna(eventComuna, eventRegion, validComunas) : false
 
@@ -94,7 +107,8 @@ const validateForm = (validRegions, validComunas, validFoodTypes) => {
       isEndDateValid = checkEndDate(eventCloseDate, eventOpenDate),
       isDescriptionValid = checkDescription(eventDescription),
       isFoodTypeValid = checkFoodType(eventFoodType, validFoodTypes),
-      areImagesValid = checkImages(eventImages)
+      areImagesValid = checkImages(eventImages),
+      areSocialNetworksValid = checkSocialNetworks(contactSocialNetworks)
 
   // valid form only if all inputs are valid
   return isRegionValid &&
@@ -107,7 +121,8 @@ const validateForm = (validRegions, validComunas, validFoodTypes) => {
       isEndDateValid &&
       isDescriptionValid &&
       isFoodTypeValid &&
-      areImagesValid
+      areImagesValid &&
+      areSocialNetworksValid
 }
 
 
@@ -116,6 +131,7 @@ const activateInstantInputValidation = (validRegions, validComunas, validFoodTyp
     switch (event.target.id) {
       case 'region':
         checkRegion(eventRegion, validRegions)
+        checkComuna(eventComuna, eventRegion, validComunas)
         break
       case 'comuna':
         checkComuna(eventComuna, eventRegion, validComunas)

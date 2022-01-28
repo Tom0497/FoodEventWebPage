@@ -13,17 +13,25 @@
   <!-- Import of my own style sheet -->
   <link rel="stylesheet" href="../static/css/style.css">
 </head>
-<body class="pt-3">
 
+<body class="pt-3">
+<!--
+header - nav-bar
+  navigation bar fixed to the top of the page and collapsable.
+-->
 <header>
+  <!-- navbar definition -->
   <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
+      <!-- brand icon or app name -->
       <a class="navbar-brand" href="portrait.html">INICIO</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
-              aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <!-- button to toggle nav items when navbar collapsed -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+              aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <!-- navbar items that are collapsable -->
+      <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link" href="eventForm.html">Informar Evento</a>
@@ -40,8 +48,13 @@
   </nav>
 </header>
 
+<!--
+main - portrait content
+  welcome messages and last reported events table
+-->
 <main class="container my-5">
   <div class="row justify-content-between">
+    <!-- welcome message and page directions -->
     <div class="col col-md-4">
       <h4>Bienvenido</h4>
       <div class="border border-dark border-2 rounded p-3">
@@ -62,7 +75,7 @@
       </div>
     </div>
 
-
+    <!-- table with the latest events reported -->
     <div class="col col-md-7 mt-3 mt-md-0">
       <h4>Últimos eventos agregados</h4>
       <div class="border border-dark border-5 rounded table-responsive-lg">
@@ -85,7 +98,7 @@
             <td>Vickuña Mackena</td>
             <td>Chilena: <br>empanadas <br>pino, queso</td>
             <td>
-              <img src="https://t2.rg.ltmcdn.com/es/images/7/5/6/img_empanada_chilena_de_carne_11657_600.jpg"
+              <img src="https://www.latercera.com/resizer/excsRX39iKQoPVGjOtJkWHgqbrg=/900x600/smart/arc-anglerfish-arc2-prod-copesa.s3.amazonaws.com/public/QGN5PXV2SJEGJNBALVRL5FC3SU.png"
                    class="img-fluid portrait-img" alt="empanadas">
             </td>
           </tr>
