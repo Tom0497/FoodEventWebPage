@@ -8,10 +8,12 @@ import {
   debounce,
   defaultDates,
   getFoodTypes,
+  getFormModals,
   getRegionsAndComunas,
   getSocialNetworks,
   queryId,
-  queryName
+  queryName,
+  submitForm
 } from "./utils.js"
 import {regionAndComunasSelect} from "./regionSelector.js"
 import {foodTypesSelect} from "./foodTypeSelector.js"
@@ -30,7 +32,18 @@ import {
 import "./imageControl.js"
 import {checkImages} from "./imageControl.js"
 import {checkSocialNetworks, socialNetworkSelect} from "./socialNetworkControl.js"
+import {showError, showSuccess} from "./checkUtils.js";
 
+/**
+ * Modals used or confirmation and success messages when submitting form.
+ */
+let [confirmationModal, successModal] = getFormModals()
+
+/**
+ * Button to confirm data submitting
+ * @type {HTMLElement|InputFields|HTMLFormElement}
+ */
+let sendButton = queryId('send-confirm-btn')
 
 /**
  * Query every single input field from document form
@@ -48,13 +61,16 @@ let eventForm = queryId('formulario'),
     eventDescription = queryId('descripcion-evento'),
     eventFoodType = queryId('tipo-comida')
 
-
 /**
  * Query image input list
  * @type {NodeListOf<HTMLElement|InputFields>}
  */
 let eventImages = queryName('foto-comida')
 
+/**
+ * Query social networks input list
+ * @type {NodeListOf<HTMLElement|InputFields>}
+ */
 let contactSocialNetworks = queryName('red-social')
 
 
@@ -82,22 +98,37 @@ Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()]).then(
     event.preventDefault();
 
     // validate every input
-    const isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
+    // const isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
+    const isFormValid = true
 
     // submit to the server if the form is valid
     if (isFormValid) {
-      eventForm.submit()
+      confirmationModal.show()
+
+      sendButton.addEventListener('click', (_) => {
+        let serverValid = true
+
+        submitForm(eventForm).then(
+            response => serverValid = handleServerResponse(response)
+        ).then(_ => {
+          confirmationModal.hide()
+          if (serverValid) {
+            successModal.show()
+          }
+        })
+      })
     }
   })
 })
 
 
 const validateForm = (validRegions, validComunas, validFoodTypes) => {
-  // validate form inputs
+  // validate region
   const isRegionValid = checkRegion(eventRegion, validRegions)
+  // validate comuna only if region is valid
+  const isComunaValid = isRegionValid ? checkComuna(eventComuna, eventRegion, validComunas, validRegions) : false
 
-  const isComunaValid = isRegionValid ? checkComuna(eventComuna, eventRegion, validComunas) : false
-
+  // all other inputs are mutually independent
   const
       isSectorValid = checkSector(eventSector),
       isNameValid = checkName(contactName),
@@ -126,15 +157,43 @@ const validateForm = (validRegions, validComunas, validFoodTypes) => {
 }
 
 
+/**
+ *
+ * @param serverResponse{Object}
+ * @return {boolean}
+ */
+const handleServerResponse = (serverResponse) => {
+  let serverValid = true
+
+  console.log('Data submitted to server')
+  console.log(serverResponse)
+
+  Object.entries(serverResponse).forEach(
+      ([elementName, [valid, comment]]) => {
+        let element = queryId(elementName)
+        if (!valid) {
+          showError(element, comment)
+        } else {
+          showSuccess(element)
+        }
+        serverValid &&= valid
+      }
+  )
+
+  return serverValid
+}
+
+
 const activateInstantInputValidation = (validRegions, validComunas, validFoodTypes) => {
   eventForm.addEventListener('input', debounce((event) => {
-    switch (event.target.id) {
+    // switch between single input fields
+    switch (event.target.name) {
       case 'region':
         checkRegion(eventRegion, validRegions)
-        checkComuna(eventComuna, eventRegion, validComunas)
+        checkComuna(eventComuna, eventRegion, validComunas, validRegions)
         break
       case 'comuna':
-        checkComuna(eventComuna, eventRegion, validComunas)
+        checkComuna(eventComuna, eventRegion, validComunas, validRegions)
         break
       case 'sector':
         checkSector(eventSector)
@@ -152,6 +211,7 @@ const activateInstantInputValidation = (validRegions, validComunas, validFoodTyp
         checkOpenDate(eventOpenDate)
         break
       case 'dia-hora-termino':
+        checkOpenDate(eventOpenDate)
         checkEndDate(eventCloseDate, eventOpenDate)
         break
       case 'descripcion-evento':
@@ -159,6 +219,12 @@ const activateInstantInputValidation = (validRegions, validComunas, validFoodTyp
         break
       case 'tipo-comida':
         checkFoodType(eventFoodType, validFoodTypes)
+        break
+      case 'red-social':
+        checkSocialNetworks(contactSocialNetworks)
+        break
+      case 'foto-comida':
+        checkImages(eventImages)
         break
     }
   }))

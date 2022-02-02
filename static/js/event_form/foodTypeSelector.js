@@ -16,7 +16,7 @@ export const foodTypesSelect = (foodTypes) => {
 
   // all other food types options
   foodTypes.forEach(
-      (foodType, idx) => foodOptions += `<option value="${idx}">${foodType}</option>`
+      (foodType) => foodOptions += `<option value="${foodType}">${foodType}</option>`
   )
 
   // then add all food types options to innerHTML of food type select

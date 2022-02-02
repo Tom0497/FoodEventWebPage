@@ -20,15 +20,12 @@ import {
  */
 export const checkRegion = (eventRegion, validRegions) => {
   let valid = false
-  const
-      minVal = 0,
-      maxVal = validRegions.length - 1,
-      region = parseInt(eventRegion.value)
+  const region = eventRegion.value
   console.log('region:', region)
 
-  if (!isRequired(region.toString()) || isNaN(region)) {
+  if (!isRequired(region)) {
     showError(eventRegion, 'Debe seleccionar una región.')
-  } else if (!isBetween(region, minVal, maxVal)) {
+  } else if (!validRegions.includes(region)) {
     showError(eventRegion, 'La región seleccionada no es una opción válida.')
   } else {
     showSuccess(eventRegion)
@@ -48,21 +45,23 @@ export const checkRegion = (eventRegion, validRegions) => {
  * @param {HTMLSelectElement} eventComuna - select element from a form
  * @param {HTMLSelectElement} eventRegion - select element from a form
  * @param {Array} validComunas - possible values for eventComuna select
+ * @param {Array} validRegions - possible values for eventRegion select
  * @returns {boolean} - true if selected value is valid
  */
-export const checkComuna = (eventComuna, eventRegion, validComunas) => {
+export const checkComuna = (eventComuna,
+                            eventRegion,
+                            validComunas,
+                            validRegions) => {
   let valid = false
   const
       region = eventRegion.value,
-      comuna = parseInt(eventComuna.value)
-  const
-      minVal = 0,
-      maxVal = validComunas[region].length - 1
+      comuna = eventComuna.value
+  const regionIdx = validRegions.indexOf(region)
   console.log('comuna:', comuna)
 
-  if (!isRequired(comuna.toString()) || isNaN(comuna)) {
+  if (!isRequired(comuna)) {
     showError(eventComuna, 'Debe seleccionar una comuna.');
-  } else if (!isBetween(comuna, minVal, maxVal)) {
+  } else if (!validComunas[regionIdx].includes(comuna)) {
     showError(eventComuna, 'La comuna seleccionada no es una opción válida.')
   } else {
     showSuccess(eventComuna);
@@ -109,7 +108,7 @@ export const checkName = (contactName) => {
   const
       name = contactName.value,
       minLen = 3,
-      maxLen = 100
+      maxLen = 200
   console.log('nombre:', name)
 
   if (!isRequired(name)) {
@@ -215,6 +214,8 @@ export const checkEndDate = (eventEndDate, eventOpenDate) => {
     showError(eventEndDate, 'Debe ingresar la fecha de término del evento.')
   } else if (!isDateValid(endDate)) {
     showError(eventEndDate, 'Formato incorrecto, ver ejemplo.')
+  } else if (!checkOpenDate(eventOpenDate)) {
+    showError(eventEndDate, 'Chequear la fecha de inicio')
   } else if (!areDatesOrdered(openDate, endDate)) {
     showError(eventEndDate, 'El término debe ser después del inicio del evento.')
   } else {
@@ -261,15 +262,12 @@ export const checkDescription = (eventDescription) => {
  */
 export const checkFoodType = (eventFoodType, validFoodTypes) => {
   let valid = false
-  const
-      foodType = parseInt(eventFoodType.value),
-      minVal = 0,
-      maxVal = validFoodTypes.length - 1
+  const foodType = eventFoodType.value
   console.log('food-type:', foodType)
 
-  if (!isRequired(foodType.toString()) || isNaN(foodType)) {
+  if (!isRequired(foodType)) {
     showError(eventFoodType, 'Debe seleccionar un tipo de comida.')
-  } else if (!isBetween(foodType, minVal, maxVal)) {
+  } else if (!validFoodTypes.includes(foodType)) {
     showError(eventFoodType, 'El tipo seleccionado no es válido.')
   } else {
     showSuccess(eventFoodType)

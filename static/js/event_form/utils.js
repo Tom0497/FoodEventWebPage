@@ -32,6 +32,11 @@ export const queryAll = (userQuery) => document.querySelectorAll(userQuery)
  * @typedef {(HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement)} InputFields
  */
 
+/**
+ * Bootstrap modal element.
+ * @typedef {Pe} BootstrapModal
+ */
+
 
 /**
  * Shorthand for document.getElementsByName. Returns in a list all elements
@@ -76,25 +81,13 @@ export const fetchJSON = async (jsonPath) => {
  * @returns {Promise<*[][]>} - An array for regions and one for comunas, as a Promise.
  */
 export const getRegionsAndComunas = async () => {
-  const regionesJSON = await fetchJSON('../static/json/chileData.json')
-  let regionsOutput = []
-  let comunasOutput = []
+  const chileDataJSON = await fetchJSON('../../cgi-bin/chile_data.py')
 
-  // then we load all regions and comunas available from JSON file into "regiones_list" and "comunas_list"
-  for (const region of regionesJSON) {
-    regionsOutput.push(`${region['region_number']} ${region['region']}`)
-    const provincias = region['provincias']
-    let regionComunas = []
-    for (const provincia of provincias) {
-      const comunas = provincia['comunas']
-      for (const comuna of comunas) {
-        regionComunas.push(comuna['name'])
-      }
-    }
-    comunasOutput.push(regionComunas);
-  }
+  const
+      regiones = chileDataJSON['regions'],
+      comunas = chileDataJSON['comunas']
 
-  return [regionsOutput, comunasOutput];
+  return [regiones, comunas]
 }
 
 
@@ -104,15 +97,7 @@ export const getRegionsAndComunas = async () => {
  * @returns {Promise<*[]>} - Array of food types as a Promise.
  */
 export const getFoodTypes = async () => {
-  const foodTypesJSON = await fetchJSON('../static/json/foodTypes.json')
-  let foodTypes = []
-
-  // all food types are loaded and saved in "food_options" array
-  for (const food_type of foodTypesJSON) {
-    foodTypes.push(food_type);
-  }
-
-  return foodTypes
+  return await fetchJSON('../../cgi-bin/food_types.py')
 }
 
 
@@ -174,4 +159,50 @@ export const debounce = (fn, delay = 500) => {
       fn.apply(null, args)
     }, delay)
   }
+}
+
+
+/**
+ * Construct bootstrap modals used in form page
+ * <br>
+ * @return {[BootstrapModal,BootstrapModal]} - confirmation and success modals
+ */
+export const getFormModals = () => {
+  // get divs to use as modals in form
+  let confirmationModalDiv = queryId('form-confirmation'),
+      successModalDiv = queryId('form-success')
+
+  // create bootstrap modals then return them
+  let confirmationModal =
+          new bootstrap.Modal(confirmationModalDiv, {
+            backdrop: 'static',
+            keyboard: false
+          }),
+      successModal =
+          new bootstrap.Modal(successModalDiv, {
+            backdrop: 'static',
+            keyboard: false
+          })
+
+  return [confirmationModal, successModal]
+}
+
+
+/**
+ * Handle form submitting to python CGI script
+ * <br>
+ * @param form{HTMLFormElement} - form with user input data
+ * @return {Promise<any>} - CGI script response to form submit
+ */
+export const submitForm = async (form) => {
+  const response = await fetch('../../cgi-bin/register_event.py', {
+    method: 'post',
+    body: new FormData(form),
+  })
+  if (!response.ok) {
+    const message = `An error has occured: ${response.status}`
+    throw new Error(message)
+  }
+
+  return await response.json()
 }

@@ -18,7 +18,7 @@ export const regionAndComunasSelect = (validRegions, validComunas) => {
 
   // add all other regions options
   validRegions.forEach(
-      (region, idx) => regionOptions += `<option value="${idx}">${region}</option>`
+      (region) => regionOptions += `<option value="${region}">${region}</option>`
   )
 
   // then add all region options to innerHTML of region select
@@ -32,11 +32,11 @@ export const regionAndComunasSelect = (validRegions, validComunas) => {
     let comunasOptions = '<option selected hidden value="">Seleccione una Comuna</option>'
 
     // region value id selected by user
-    const regionSelected = parseInt(regionSelect.value)
+    const regionSelected = validRegions.indexOf(regionSelect.value)
 
     // then we load all comunas available from selected region
     validComunas[regionSelected].forEach(
-        (comuna, idx) => comunasOptions += `<option value="${idx}">${comuna}</option>`
+        (comuna) => comunasOptions += `<option value="${comuna}">${comuna}</option>`
     )
 
     // then add comunas options to innerHTML of comunas select
