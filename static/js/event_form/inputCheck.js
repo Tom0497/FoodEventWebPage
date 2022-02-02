@@ -44,8 +44,8 @@ export const checkRegion = (eventRegion, validRegions) => {
  * <br>
  * @param {HTMLSelectElement} eventComuna - select element from a form
  * @param {HTMLSelectElement} eventRegion - select element from a form
- * @param {Array} validComunas - possible values for eventComuna select
- * @param {Array} validRegions - possible values for eventRegion select
+ * @param {Array<Array<string>>} validComunas - possible values for eventComuna select
+ * @param {Array<string>} validRegions - possible values for eventRegion select
  * @returns {boolean} - true if selected value is valid
  */
 export const checkComuna = (eventComuna,
@@ -56,18 +56,19 @@ export const checkComuna = (eventComuna,
   const
       region = eventRegion.value,
       comuna = eventComuna.value
-  const regionIdx = validRegions.indexOf(region)
   console.log('comuna:', comuna)
 
   if (!isRequired(comuna)) {
-    showError(eventComuna, 'Debe seleccionar una comuna.');
-  } else if (!validComunas[regionIdx].includes(comuna)) {
+    showError(eventComuna, 'Debe seleccionar una comuna.')
+  } else if (!checkRegion(eventRegion, validRegions)) {
+    showError(eventComuna, 'Chequear región.')
+  } else if (!validComunas[validRegions.indexOf(region)].includes(comuna)) {
     showError(eventComuna, 'La comuna seleccionada no es una opción válida.')
   } else {
-    showSuccess(eventComuna);
-    valid = true;
+    showSuccess(eventComuna)
+    valid = true
   }
-  return valid;
+  return valid
 }
 
 
@@ -257,7 +258,7 @@ export const checkDescription = (eventDescription) => {
  * array boundaries.
  * <br>
  * @param {HTMLSelectElement} eventFoodType - select input element from a form
- * @param {Array} validFoodTypes - valid food types inputs
+ * @param {Array<string>} validFoodTypes - valid food types inputs
  * @returns {boolean} - true if selected food type is valid
  */
 export const checkFoodType = (eventFoodType, validFoodTypes) => {

@@ -1,14 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
 import re
 from cgi import FieldStorage
 from collections import defaultdict
-from typing import Dict
-
-from conf import host, user, password, database, emailregex, phoneregex, datetimeformat
-from db import EventDatabase
 from datetime import datetime
+from typing import Dict, Tuple, List
+
+import filetype
+
+from conf import host, user, password, database, emailregex, phoneregex, datetimeformat, maxfilesize, mimevalid
+from db import EventDatabase
 
 
 class FormHandler:
@@ -38,10 +41,13 @@ class FormHandler:
                 datadict[key] = self.post_data.getlist(key=key)
             else:
                 datadict[key] = self.post_data.getfirst(key=key, default="")
+        for key, value in datadict.items():
+            if value is None:
+                datadict[key] = ""
 
         return defaultdict(lambda: '', datadict)
 
-    def _check_data(self):
+    def _check_data(self) -> Dict:
 
         region_valid = self.__check_region()
         comuna_valid = self.__check_comuna()
@@ -56,6 +62,8 @@ class FormHandler:
         open_date_valid = self.__check_open_date()
         close_date_valid = self.__check_close_date()
 
+        images_valid = self.__check_images()
+
         return {
             'region': region_valid,
             'comuna': comuna_valid,
@@ -66,10 +74,11 @@ class FormHandler:
             'descripcion-evento': description_valid,
             'tipo-comida': food_type_valid,
             'dia-hora-inicio': open_date_valid,
-            'dia-hora-termino': close_date_valid
+            'dia-hora-termino': close_date_valid,
+            'foto-comida': images_valid
         }
 
-    def __check_region(self):
+    def __check_region(self) -> Tuple[bool, str]:
         region = self.dict_data.get('region')
         valid = False
         message = ''
@@ -83,7 +92,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_comuna(self):
+    def __check_comuna(self) -> Tuple[bool, str]:
         comuna = self.dict_data.get('comuna')
         valid = False
         message = ''
@@ -102,7 +111,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_sector(self):
+    def __check_sector(self) -> Tuple[bool, str]:
         sector = self.dict_data.get('sector')
         valid = False
         message = ''
@@ -114,7 +123,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_name(self):
+    def __check_name(self) -> Tuple[bool, str]:
         name = self.dict_data.get('nombre')
         valid = False
         message = ''
@@ -128,7 +137,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_email(self):
+    def __check_email(self) -> Tuple[bool, str]:
         email = self.dict_data.get('email')
         valid = False
         message = ''
@@ -144,7 +153,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_phone_number(self):
+    def __check_phone_number(self) -> Tuple[bool, str]:
         phone_number = self.dict_data.get('celular')
         valid = False,
         message = ''
@@ -160,19 +169,19 @@ class FormHandler:
 
         return valid, message
 
-    def __check_description(self):
+    def __check_description(self) -> Tuple[bool, str]:
         description = self.dict_data.get('descripcion-evento')
         valid = False
         message = ''
 
-        if not(0 <= len(description) <= 1000):
+        if not (0 <= len(description) <= 1000):
             message = 'Largo máximo de caracteres excedido.'
         else:
             valid = True
 
         return valid, message
 
-    def __check_food_type(self):
+    def __check_food_type(self) -> Tuple[bool, str]:
         food_type = self.dict_data.get('tipo-comida')
         valid = False
         message = ''
@@ -186,7 +195,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_open_date(self):
+    def __check_open_date(self) -> Tuple[bool, str]:
         open_date = self.dict_data.get('dia-hora-inicio')
         valid = False
         message = ''
@@ -200,7 +209,7 @@ class FormHandler:
 
         return valid, message
 
-    def __check_close_date(self):
+    def __check_close_date(self) -> Tuple[bool, str]:
         open_date = self.dict_data.get('dia-hora-inicio')
         close_date = self.dict_data.get('dia-hora-termino')
         valid = False
@@ -221,8 +230,23 @@ class FormHandler:
 
         return valid, message
 
-    def __check_images(self):
-        pass
+    def __check_images(self) -> Tuple[bool, List[Tuple[bool, str]]]:
+        total_valid = True
+        response = []
+
+        if 'foto-comida' in self.post_data:
+            images = self.post_data['foto-comida']
+            if not isinstance(images, list):
+                images = [images]
+        else:
+            return False, [(False, 'Subir una imagen.')]
+
+        for image in images:
+            valid, message = check_image(image)
+            total_valid = total_valid and valid
+            response.append((valid, message))
+
+        return total_valid, response
 
     def __check_social_networks(self):
         pass
@@ -241,3 +265,28 @@ def dates_are_ordered(first_date: str, second_date: str) -> bool:
     seconddatefmt = datetime.strptime(second_date, datetimeformat)
 
     return firstdatefmt < seconddatefmt
+
+
+def check_image(fileitem: FieldStorage) -> Tuple[bool, str]:
+    valid = False
+    message = 'Debe subir una imagen.'
+
+    if not fileitem.filename:  # no file was submitted
+        return valid, message
+
+    try:
+        size = os.fstat(fileitem.file.fileno()).st_size  # file size
+        real_type = filetype.guess(fileitem.file)  # mime type
+        fileitem.file.seek(0, 0)  # return pointer to beginning of file
+
+        if not (real_type.mime in mimevalid):
+            message = 'Extensión del archivo debe ser (.jpg .jpeg .png).'
+        elif size > maxfilesize:
+            message = f'Tamaño del archivo {size / 1000000:.3f} MB excede el máximo {maxfilesize / 1000000:.3f} MB.'
+        else:
+            message = ''
+            valid = True
+    except IOError:
+        message = 'Error al leer el archivo.'  # error while trying to read file
+
+    return valid, message

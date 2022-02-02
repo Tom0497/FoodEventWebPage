@@ -92,44 +92,65 @@ Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()]).then(
   // activate instant single input validation
   activateInstantInputValidation(validRegions, validComunas, validFoodTypes)
 
-  // validate form before submittting
+  /**
+   * Form validity client-side and server-side.
+   * @type {boolean}
+   */
+  let
+      isFormValid = false,
+      serverValid = false
+
+  /**
+   * Listener to validate form client-side before submitting to server.
+   */
   eventForm.addEventListener('submit', (event) => {
-    // prevent the form from submitting
+    // prevent the form from automatically submitting
     event.preventDefault();
 
-    // validate every input
+    // validate every input client-side
     // const isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
-    const isFormValid = true
+    isFormValid = true
 
-    // submit to the server if the form is valid
+    // submit to the server if the form is client-side valid
+    if (isFormValid) confirmationModal.show()
+  })
+
+  /**
+   * Listener to submit form to server and handle its response.
+   */
+  sendButton.addEventListener('click', (_) => {
+    // submit form to server only if is valid client-side
     if (isFormValid) {
-      confirmationModal.show()
+      submitForm(eventForm)
+          .then(
+              // pass server response to handler
+              response => serverValid = handleServerResponse(response)
+          )
+          .then(_ => {
+            confirmationModal.hide()
 
-      sendButton.addEventListener('click', (_) => {
-        let serverValid = true
-
-        submitForm(eventForm).then(
-            response => serverValid = handleServerResponse(response)
-        ).then(_ => {
-          confirmationModal.hide()
-          if (serverValid) {
-            successModal.show()
-          }
-        })
-      })
+            // if server validated form, show success modal
+            if (serverValid) successModal.show()
+            else isFormValid = false
+          })
     }
   })
 })
 
 
+/**
+ * Validate client-side form and its user input before submitting to server.
+ * <br>
+ * @param {Array<string>} validRegions - possible values for eventRegion select.
+ * @param {Array<Array<string>>} validComunas - possible values for eventComuna select.
+ * @param {Array<string>} validFoodTypes - valid food types inputs.
+ * @return {boolean} - whether form is valid client-side.
+ */
 const validateForm = (validRegions, validComunas, validFoodTypes) => {
-  // validate region
-  const isRegionValid = checkRegion(eventRegion, validRegions)
-  // validate comuna only if region is valid
-  const isComunaValid = isRegionValid ? checkComuna(eventComuna, eventRegion, validComunas, validRegions) : false
-
-  // all other inputs are mutually independent
+  // validate every input
   const
+      isRegionValid = checkRegion(eventRegion, validRegions),
+      isComunaValid = checkComuna(eventComuna, eventRegion, validComunas, validRegions),
       isSectorValid = checkSector(eventSector),
       isNameValid = checkName(contactName),
       isEmailValid = checkEmail(contactEmail),
@@ -158,9 +179,10 @@ const validateForm = (validRegions, validComunas, validFoodTypes) => {
 
 
 /**
- *
- * @param serverResponse{Object}
- * @return {boolean}
+ * Handle response from server to POST form data.
+ * <br>
+ * @param serverResponse{Object} - JSON containing server response by input field.
+ * @return {boolean} - whether server determined submitted data valid.
  */
 const handleServerResponse = (serverResponse) => {
   let serverValid = true
@@ -168,25 +190,43 @@ const handleServerResponse = (serverResponse) => {
   console.log('Data submitted to server')
   console.log(serverResponse)
 
+  // visit every element of response from server
   Object.entries(serverResponse).forEach(
-      ([elementName, [valid, comment]]) => {
-        let element = queryId(elementName)
-        if (!valid) {
-          showError(element, comment)
-        } else {
-          showSuccess(element)
+      ([elementName, [valid, message]]) => {
+        if (!['foto-comida', 'red-social'].includes(elementName)) {
+          let element = queryId(elementName)
+
+          if (!valid) showError(element, message)
+          else showSuccess(element)
+
+          serverValid &&= valid
         }
-        serverValid &&= valid
       }
   )
+
+  const [imagesValid, imageResponses] = serverResponse['foto-comida']
+  imageResponses.forEach(
+      ([imageValid, message], idx) => {
+        if (!imageValid) showError(eventImages[idx], message)
+        else showSuccess(eventImages[idx])
+      }
+  )
+  serverValid &&= imagesValid
 
   return serverValid
 }
 
 
+/**
+ * Validate user input as it's being typed within input element.
+ * <br>
+ * @param {Array<string>} validRegions - possible values for eventRegion select.
+ * @param {Array<Array<string>>} validComunas - possible values for eventComuna select.
+ * @param {Array<string>} validFoodTypes - valid food types inputs.
+ */
 const activateInstantInputValidation = (validRegions, validComunas, validFoodTypes) => {
   eventForm.addEventListener('input', debounce((event) => {
-    // switch between single input fields
+    // switch between input fields based on their name
     switch (event.target.name) {
       case 'region':
         checkRegion(eventRegion, validRegions)

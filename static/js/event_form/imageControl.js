@@ -105,7 +105,7 @@ const checkImage = (imageInput) => {
   let valid = false
   const
       minSize = 5000,
-      maxSize = 20000000;
+      maxSize = 2000000;
 
   if (imageInput.files.length === 0) {
     showError(imageInput, 'Debe subir una imagen.')

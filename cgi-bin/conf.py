@@ -21,3 +21,7 @@ phoneregex = r"^\+(?:[0-9] ?){10}[0-9]$"
 
 # datetime expected format
 datetimeformat = '%Y-%m-%d %H:%M'
+
+# image file boundaries
+maxfilesize = 2000000
+mimevalid = ['image/png', 'image/jpeg']
