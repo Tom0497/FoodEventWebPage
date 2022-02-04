@@ -1,17 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import os
 import re
 from cgi import FieldStorage
 from collections import defaultdict
-from datetime import datetime
 from typing import Dict, Tuple, List
 
-import filetype
-
-from conf import host, user, password, database, emailregex, phoneregex, datetimeformat, maxfilesize, mimevalid
+from conf import host, user, password, database, emailregex, phoneregex, datetimeformat
 from db import EventDatabase
+from utils import datetime_has_format, dates_are_ordered, check_image, check_social_network_link
 
 
 class FormHandler:
@@ -26,13 +23,16 @@ class FormHandler:
                                 password=password,
                                 database=database)
 
-        # valid regions, comunas and food types
+        # valid regions, comunas, food types, and social networks
         self.valid_regions = self.db.get_regions(name_only=True)
         self.valid_comunas = self.db.get_comunas(name_only=True)
         self.valid_food_types = self.db.get_food_types()
+        self.valid_social_networks = self.db.get_social_networks()
 
         # validation response
-        self.form_check = self._check_data()
+        self.form_valid, self.form_check = self._check_data()
+        if self.form_valid:
+            self.ok_status_db = self.db.register_event(self.post_data)
 
     def _cgi_to_dict(self) -> Dict:
         datadict = {}
@@ -47,7 +47,7 @@ class FormHandler:
 
         return defaultdict(lambda: '', datadict)
 
-    def _check_data(self) -> Dict:
+    def _check_data(self) -> Tuple[bool, Dict]:
 
         region_valid = self.__check_region()
         comuna_valid = self.__check_comuna()
@@ -63,20 +63,40 @@ class FormHandler:
         close_date_valid = self.__check_close_date()
 
         images_valid = self.__check_images()
+        social_networks_valid = self.__check_social_networks()
 
-        return {
-            'region': region_valid,
-            'comuna': comuna_valid,
-            'sector': sector_valid,
-            'nombre': name_valid,
-            'email': email_valid,
-            'celular': phone_valid,
-            'descripcion-evento': description_valid,
-            'tipo-comida': food_type_valid,
-            'dia-hora-inicio': open_date_valid,
-            'dia-hora-termino': close_date_valid,
-            'foto-comida': images_valid
-        }
+        formvalid = all(
+            (region_valid[0],
+             comuna_valid[0],
+             sector_valid[0],
+             name_valid[0],
+             email_valid[0],
+             phone_valid[0],
+             description_valid[0],
+             food_type_valid[0],
+             open_date_valid[0],
+             close_date_valid[0],
+             images_valid[0],
+             social_networks_valid[0])
+        )
+
+        return (
+            formvalid,
+            {
+                'region': region_valid,
+                'comuna': comuna_valid,
+                'sector': sector_valid,
+                'nombre': name_valid,
+                'email': email_valid,
+                'celular': phone_valid,
+                'descripcion-evento': description_valid,
+                'tipo-comida': food_type_valid,
+                'dia-hora-inicio': open_date_valid,
+                'dia-hora-termino': close_date_valid,
+                'foto-comida': images_valid,
+                'red-social': social_networks_valid
+            }
+        )
 
     def __check_region(self) -> Tuple[bool, str]:
         region = self.dict_data.get('region')
@@ -248,45 +268,24 @@ class FormHandler:
 
         return total_valid, response
 
-    def __check_social_networks(self):
-        pass
+    def __check_social_networks(self) -> Tuple[bool, List[Tuple[bool, str]]]:
+        total_valid = True
+        response = []
 
+        social_networks = self.dict_data.get('red-social', None)
+        already_considered = []
 
-def datetime_has_format(date: str, dateformat: str) -> bool:
-    try:
-        datetime.strptime(date, dateformat)
-        return True
-    except ValueError:
-        return False
+        if not social_networks:
+            return total_valid, response
 
+        for social_network in social_networks:
+            valid, message, sn = check_social_network_link(social_network,
+                                                           already_considered,
+                                                           self.valid_social_networks)
 
-def dates_are_ordered(first_date: str, second_date: str) -> bool:
-    firstdatefmt = datetime.strptime(first_date, datetimeformat)
-    seconddatefmt = datetime.strptime(second_date, datetimeformat)
+            total_valid = total_valid and valid
+            response.append((valid, message))
+            if sn:
+                already_considered.append(sn)
 
-    return firstdatefmt < seconddatefmt
-
-
-def check_image(fileitem: FieldStorage) -> Tuple[bool, str]:
-    valid = False
-    message = 'Debe subir una imagen.'
-
-    if not fileitem.filename:  # no file was submitted
-        return valid, message
-
-    try:
-        size = os.fstat(fileitem.file.fileno()).st_size  # file size
-        real_type = filetype.guess(fileitem.file)  # mime type
-        fileitem.file.seek(0, 0)  # return pointer to beginning of file
-
-        if not (real_type.mime in mimevalid):
-            message = 'Extensión del archivo debe ser (.jpg .jpeg .png).'
-        elif size > maxfilesize:
-            message = f'Tamaño del archivo {size / 1000000:.3f} MB excede el máximo {maxfilesize / 1000000:.3f} MB.'
-        else:
-            message = ''
-            valid = True
-    except IOError:
-        message = 'Error al leer el archivo.'  # error while trying to read file
-
-    return valid, message
+        return total_valid, response

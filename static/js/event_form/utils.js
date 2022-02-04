@@ -107,14 +107,7 @@ export const getFoodTypes = async () => {
  * @returns {Promise<*[]>} - Array of social networks names as a Promise.
  */
 export const getSocialNetworks = async () => {
-  const socialNetworksJSON = await fetchJSON('../static/json/socialNetworks.json')
-  let socialNetworks = []
-
-  for (const socialNetwork of socialNetworksJSON) {
-    socialNetworks.push(socialNetwork["network_name"])
-  }
-
-  return socialNetworks
+  return await fetchJSON('../../cgi-bin/social_networks.py')
 }
 
 
@@ -206,3 +199,12 @@ export const submitForm = async (form) => {
 
   return await response.json()
 }
+
+
+/**
+ * Capitalize a string.
+ * <br>
+ * @param variable{string} - string to be capitalized.
+ * @return {string} - capitalized string.
+ */
+export const capitalizeString = (variable) => variable.charAt(0).toUpperCase() + variable.slice(1)

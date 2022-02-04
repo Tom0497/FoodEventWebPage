@@ -108,8 +108,7 @@ Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()]).then(
     event.preventDefault();
 
     // validate every input client-side
-    // const isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
-    isFormValid = true
+    isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
 
     // submit to the server if the form is client-side valid
     if (isFormValid) confirmationModal.show()
@@ -190,7 +189,7 @@ const handleServerResponse = (serverResponse) => {
   console.log('Data submitted to server')
   console.log(serverResponse)
 
-  // visit every element of response from server
+  // visit every single input element of response from server
   Object.entries(serverResponse).forEach(
       ([elementName, [valid, message]]) => {
         if (!['foto-comida', 'red-social'].includes(elementName)) {
@@ -204,6 +203,7 @@ const handleServerResponse = (serverResponse) => {
       }
   )
 
+  // handle response for images submitted
   const [imagesValid, imageResponses] = serverResponse['foto-comida']
   imageResponses.forEach(
       ([imageValid, message], idx) => {
@@ -212,6 +212,16 @@ const handleServerResponse = (serverResponse) => {
       }
   )
   serverValid &&= imagesValid
+
+  // handle response for social networks submitted
+  const [socialNetworksValid, socialNetworksResponses] = serverResponse['red-social']
+  socialNetworksResponses.forEach(
+      ([socialNetworkValid, message], idx) => {
+        if (!socialNetworkValid) showError(contactSocialNetworks[idx], message)
+        else showSuccess(contactSocialNetworks[idx])
+      }
+  )
+  serverValid &&= socialNetworksValid
 
   return serverValid
 }

@@ -1,4 +1,4 @@
-import {queryId} from "./utils.js"
+import {queryId, capitalizeString} from "./utils.js"
 import {isRequired, showError, showSuccess} from "./checkUtils.js";
 
 /**
@@ -32,9 +32,12 @@ export const socialNetworkSelect = (socialNetworks) => {
   // default display value of sn selector
   let snOptions = '<option selected hidden value="">¿Tienes redes sociales?</option>\n';
 
-  // load all sn available from JSON file and save them in "sn_list" and add them to "snOptions"
+  // load all sn available from JSON file and add them to "snOptions"
   socialNetworks.forEach(
-      (socialNetworkName, idx) => snOptions += `<option value="${idx}">${socialNetworkName}</option>`
+      (socialNetworkName) => {
+        const optionName = capitalizeString(socialNetworkName)
+        snOptions += `<option value="${socialNetworkName}">${optionName}</option>`
+      }
   )
 
   // then add all sn options to innerHTML of SN select
@@ -45,11 +48,10 @@ export const socialNetworkSelect = (socialNetworks) => {
    */
   snSelect.addEventListener('change', (_) => {
     // starting from sn id other parameters necessary for input group creation are determined
-    const snSelected = parseInt(snSelect.value)
-    const snName = socialNetworks[snSelected]
-    const snNameLower = snName.toLowerCase()
-    const snAddonId = `${snNameLower}-addon`
-    const snInputId = `${snNameLower}-input`
+    const snSelected = snSelect.value
+    const snName = snSelected.charAt(0).toUpperCase() + snSelected.slice(1)
+    const snAddonId = `${snSelected}-addon`
+    const snInputId = `${snSelected}-input`
 
     // element is added only if it hasn't already
     if (!snAddedInputs.includes(snInputId)) {
@@ -59,8 +61,8 @@ export const socialNetworkSelect = (socialNetworks) => {
       newSnDiv.id = `${snInputId}`
       newSnDiv.innerHTML = `
           <span class="input-group-text" id="${snAddonId}">${snName}</span>
-          <input type="text" class="form-control" placeholder="ID o URL" aria-label="Username"
-                 aria-describedby="${snAddonId}" name="red-social">
+          <input type="text" class="form-control" placeholder="URL" aria-label="Username"
+                 aria-describedby="${snAddonId}" name="red-social" id="${snSelected}" value="https://">
           <span class="input-group-text">
             <button type="button" class="btn-close ${btnCloseClass}" aria-label="Close"></button>
           </span>
@@ -112,20 +114,23 @@ export const checkSocialNetworks = (socialNetworksInputList) => {
 }
 
 /**
- * Check if user input is a valid social network URL or ID.
+ * Check if user input is a valid social network URL.
  * <br>
  * @param socialNetworkInput{HTMLInputElement} - input element with user input
  */
 const checkSocialNetwork = (socialNetworkInput) => {
   let valid = false
   const [socialNetwork, socialNetworkLink] = discoverSocialNetwork(socialNetworkInput)
-  const socialNetworkValue = socialNetworkInput.value
+  const
+      socialNetworkValue = socialNetworkInput.value,
+      [validURL, message] = parseAndCheckURL(socialNetworkValue, socialNetworkLink)
+
   console.log(`${socialNetwork}: ${socialNetworkValue}`)
 
   if (!isRequired(socialNetworkValue)) {
-    showError(socialNetworkInput, 'Debe ingresar un ID o URL válido.')
-  } else if (!socialNetworkValue.includes(socialNetworkLink)) {
-    showError(socialNetworkInput, 'La URL no corresponde a la red social.')
+    showError(socialNetworkInput, 'Debe ingresar una URL.')
+  } else if(!validURL) {
+    showError(socialNetworkInput, message)
   } else {
     showSuccess(socialNetworkInput)
     valid = true
@@ -134,14 +139,49 @@ const checkSocialNetwork = (socialNetworkInput) => {
 }
 
 /**
+ * Check if a string is a valid HTTP URL that contains a specific pathname.
+ * <br>
+ * @param urlString{string} - URL as a string to be checked.
+ * @param basePath{string} - string expected to be in pathname of URL.
+ * @return {[boolean,string]} - whether URl is valid.
+ */
+const parseAndCheckURL = (urlString, basePath) => {
+  let valid = false,
+      message = ''
+
+  try {
+    // try to construct URL object
+    const url = new URL(urlString)
+
+    // check hypertext protocol, base url, user path
+    const
+        protocolValid = ['https:', 'http:'].includes(url.protocol),
+        basePathValid = basePath !== 'otra' ? url.hostname.includes(basePath) : true,
+        userValid = !['/', ''].includes(url.pathname)
+
+    // messages according to error
+    if (!protocolValid) message = 'URL debe comenzar con https:// o http://'
+    else if (!basePathValid) message = 'URL no se corresponde con la red social seleccionada'
+    else if (!userValid) message = `URL no contiene path (https://www.${basePath}.com/path)`
+
+    valid = protocolValid && basePathValid && userValid
+  } catch (error) {
+    // URL object couldn't be constructed
+    console.log(error)
+    message = `URL proporcionada no es válida (Ejemplo: https://www.${basePath}.com/user1234).`
+  }
+
+  return [valid, message]
+}
+
+
+/**
  * Given an HTML input element determine which social network was expected.
  * <br>
  * @param socialNetworkInput{HTMLInputElement} - input element with user input
  */
 const discoverSocialNetwork = (socialNetworkInput) => {
-  const parentDiv = socialNetworkInput.parentElement
-  const parentDivId = parentDiv.id
-  const socialNetwork = parentDivId.replace('-input', '')
+  const socialNetwork = socialNetworkInput.id
   const socialNetworkLink = `${socialNetwork}.com`
 
   return [socialNetwork, socialNetworkLink]
