@@ -31,8 +31,7 @@ getLastEvents().then(response => {
             <td>${sector}</td>
             <td>${foodType}: <br>${description}</td>
             <td>
-              <img src="${imageFullPath}"
-                   class="img-fluid portrait-img" alt="imagen del evento">
+              <img src="${imageFullPath}" class="img-fluid portrait-img" alt="imagen del evento">
             </td>
           </tr>
         `

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from cgi import FieldStorage
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Union
 from pathlib import Path
 
 import mysql.connector
@@ -71,19 +71,26 @@ class EventDatabase:
         self.cnx.commit()
         return self.cursor.lastrowid
 
-    def get_events(self):
+    def get_events(self, last: Union[int,None]):
 
-        last_events = self._static_query("""
-        SELECT id, comuna_id, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tipo
-        FROM evento
-        ORDER BY dia_hora_inicio DESC LIMIT 5
-        """)
+        if last:
+            events = self._static_query(f"""
+            SELECT id, comuna_id, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tipo
+            FROM evento
+            ORDER BY dia_hora_inicio DESC LIMIT {last}
+            """)
+        else:
+            events = self._static_query("""
+            SELECT id, comuna_id, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tipo
+            FROM evento
+            ORDER BY dia_hora_inicio DESC
+            """)
 
         comunas = []
         regions = []
         networks_info = []
         images_info = []
-        for event in last_events:
+        for event in events:
             event_id, comuna_id = event[:2]
             comuna, region_id = self._static_query(f"""
             SELECT nombre, region_id
@@ -129,7 +136,7 @@ class EventDatabase:
             images_info.append(temp_im)
 
         cleaned_events = []
-        for i, event in enumerate(last_events):
+        for i, event in enumerate(events):
             row = {
                 'region': regions[i],
                 'comuna': comunas[i],

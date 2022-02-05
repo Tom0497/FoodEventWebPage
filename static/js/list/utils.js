@@ -29,6 +29,15 @@ export const fetchJSON = async (jsonPath) => {
  * <br>
  * @returns {Promise<*[]>} - Array of food types as a Promise.
  */
-export const getLastEvents = async () => {
-  return await fetchJSON('../../../cgi-bin/last_events.py')
+export const getEvents = async () => {
+  return await fetchJSON('../../../cgi-bin/events.py')
 }
+
+
+/**
+ * Capitalize a string.
+ * <br>
+ * @param variable{string} - string to be capitalized.
+ * @return {string} - capitalized string.
+ */
+export const capitalizeString = (variable) => variable.charAt(0).toUpperCase() + variable.slice(1)

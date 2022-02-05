@@ -16,7 +16,7 @@ event_db = EventDatabase(host=host,
                          password=password,
                          database=database)
 
-data = event_db.get_events(last=5)
+data = event_db.get_events(last=None)
 
 print('Content-type: application/json; charset=UTF-8')
 print()

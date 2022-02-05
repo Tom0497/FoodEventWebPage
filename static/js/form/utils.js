@@ -81,7 +81,7 @@ export const fetchJSON = async (jsonPath) => {
  * @returns {Promise<*[][]>} - An array for regions and one for comunas, as a Promise.
  */
 export const getRegionsAndComunas = async () => {
-  const chileDataJSON = await fetchJSON('../../cgi-bin/chile_data.py')
+  const chileDataJSON = await fetchJSON('../../../cgi-bin/chile_data.py')
 
   const
       regiones = chileDataJSON['regions'],
@@ -97,7 +97,7 @@ export const getRegionsAndComunas = async () => {
  * @returns {Promise<*[]>} - Array of food types as a Promise.
  */
 export const getFoodTypes = async () => {
-  return await fetchJSON('../../cgi-bin/food_types.py')
+  return await fetchJSON('../../../cgi-bin/food_types.py')
 }
 
 
