@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+import hashlib
 from cgi import FieldStorage
 from typing import List, Tuple, Any
+from pathlib import Path
 
 import mysql.connector
 
-from conf import num_regions
+from conf import num_regions, datetimeformat
 from urllib.parse import urlparse
 from utils import resolve_hostname
 
@@ -50,6 +51,103 @@ class EventDatabase:
                                            database=database)
         # cursor to execute queries to database
         self.cursor = self.cnx.cursor()
+
+    def _static_query(self, query: str) -> List:
+        """
+        Perform a query with no parameters to database.
+
+        :param query:
+            string that represents the static query.
+        :return:
+            database response to given query as a list of tuples.
+        """
+
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def _dynamic_query(self, query: str, data: Tuple[Any, ...]) -> List:
+
+        self.cursor.execute(query, data)
+        self.cnx.commit()
+        return self.cursor.lastrowid
+
+    def get_events(self):
+
+        last_events = self._static_query("""
+        SELECT id, comuna_id, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tipo
+        FROM evento
+        ORDER BY dia_hora_inicio DESC LIMIT 5
+        """)
+
+        comunas = []
+        regions = []
+        networks_info = []
+        images_info = []
+        for event in last_events:
+            event_id, comuna_id = event[:2]
+            comuna, region_id = self._static_query(f"""
+            SELECT nombre, region_id
+            FROM comuna
+            WHERE comuna.id='{comuna_id}'
+            """)[0]
+
+            region = self._static_query(f"""
+            SELECT nombre
+            FROM region
+            WHERE region.id='{region_id}'
+            """)[0][0]
+
+            social_networks = self._static_query(f"""
+            SELECT id, nombre, identificador, evento_id
+            FROM red_social
+            WHERE evento_id='{event_id}'
+            """)
+
+            images = self._static_query(f"""
+            SELECT id, ruta_archivo, nombre_archivo, evento_id
+            FROM foto
+            WHERE evento_id='{event_id}'
+            """)
+
+            temp_sn = []
+            for social_network in social_networks:
+                temp_sn.append({
+                    'social-network': social_network[1],
+                    'url': social_network[2]
+                })
+
+            temp_im = []
+            for image in images:
+                temp_im.append({
+                    'basepath': image[1],
+                    'image-path': image[2]
+                })
+
+            comunas.append(comuna)
+            regions.append(region)
+            networks_info.append(temp_sn)
+            images_info.append(temp_im)
+
+        cleaned_events = []
+        for i, event in enumerate(last_events):
+            row = {
+                'region': regions[i],
+                'comuna': comunas[i],
+                'sector': event[2],
+                'nombre': event[3],
+                'email': event[4],
+                'celular': event[5],
+                'dia-hora-inicio': event[6].strftime(datetimeformat),
+                'dia-hora-termino': event[7].strftime(datetimeformat),
+                'descripcion-evento': event[8],
+                'tipo-comida': event[9],
+                'red-social': networks_info[i],
+                'foto-comida': images_info[i]
+            }
+
+            cleaned_events.append(row)
+
+        return cleaned_events
 
     def get_social_networks(self) -> List[str]:
         """
@@ -131,25 +229,6 @@ class EventDatabase:
 
         return comunas
 
-    def _static_query(self, query: str) -> List:
-        """
-        Perform a query with no parameters to database.
-
-        :param query:
-            string that represents the static query.
-        :return:
-            database response to given query as a list of tuples.
-        """
-
-        self.cursor.execute(query)
-        return self.cursor.fetchall()
-
-    def _dynamic_query(self, query: str, data: Tuple[Any, ...]) -> List:
-
-        self.cursor.execute(query, data)
-        self.cnx.commit()
-        return self.cursor.lastrowid
-
     def register_event(self, postdata: FieldStorage) -> bool:
 
         region = postdata.getfirst('region', default='')
@@ -205,11 +284,18 @@ class EventDatabase:
         """
 
         for image in images:
-            filepath = '../media'
+            filepath = 'media'
             filename = image.filename
 
+            file_count = self._static_query("SELECT COUNT(id) FROM foto")[0][0] + 1
+            file_hash = hashlib.sha256(filename.encode()).hexdigest()[:30]
+            hash_name = str(file_count) + file_hash
+
+            image_path = Path(filepath) / hash_name
+            open(image_path, 'wb').write(image.file.read())
+
             self._dynamic_query(image_query, (
-                filepath, filename, event_id
+                filepath, hash_name, event_id
             ))
 
         return True

@@ -12,6 +12,9 @@
 
   <!-- Import of my own style sheet -->
   <link rel="stylesheet" href="../static/css/style.css">
+
+  <!-- JS files for portrait control -->
+  <script defer type="module" src="../static/js/portrait/portraitControl.js"></script>
 </head>
 
 <body class="pt-3">
@@ -90,62 +93,8 @@ main - portrait content
             <th scope="col">Foto</th>
           </tr>
           </thead>
-          <tbody>
-          <tr class="align-middle">
-            <td>2021-09-07 - 12:00</td>
-            <td>2021-09-07 - 14:00</td>
-            <td>La Florida</td>
-            <td>Vickuña Mackena</td>
-            <td>Chilena: <br>empanadas <br>pino, queso</td>
-            <td>
-              <img src="https://www.latercera.com/resizer/excsRX39iKQoPVGjOtJkWHgqbrg=/900x600/smart/arc-anglerfish-arc2-prod-copesa.s3.amazonaws.com/public/QGN5PXV2SJEGJNBALVRL5FC3SU.png"
-                   class="img-fluid portrait-img" alt="empanadas">
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td>2021-09-06 - 17:00</td>
-            <td>2021-09-06 - 21:00</td>
-            <td>Santiago</td>
-            <td>Plaza</td>
-            <td>Italiana: <br>Pizza</td>
-            <td>
-              <img src="https://carolinarice.com/wp-content/uploads/2020/04/Rice-Pizza-Crust.jpg"
-                   class="img-fluid portrait-img" alt="pizza">
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td>2021-09-04 - 12:00</td>
-            <td>2021-09-04 - 15:00</td>
-            <td>Ñuñoa</td>
-            <td>Estadio Nacional</td>
-            <td>India: <br>Pollo Curry</td>
-            <td>
-              <img src="https://www.divinacocina.es/wp-content/uploads/pollo-al-curry-cazuela-arroz.jpg"
-                   class="img-fluid portrait-img" alt="pollo al curry">
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td>2021-09-12 - 17:00</td>
-            <td>2021-09-12 - 20:00</td>
-            <td>Puerto Natales</td>
-            <td>Polideportivo Municipal</td>
-            <td>Casera: <br>Milcaos</td>
-            <td>
-              <img src="https://www.comidastipicaschilenas.com/wp-content/uploads/2020/04/receta-de-milcao.jpg"
-                   class="img-fluid portrait-img" alt="milcaos">
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td>2021-09-17 - 21:00</td>
-            <td>2021-09-17 - 23:50</td>
-            <td>Punta Arenas</td>
-            <td>Zona Franca</td>
-            <td>Chilena: <br>Terremoto, Chicha</td>
-            <td>
-              <img src="https://media.cnnchile.com/2018/09/terremoto-y-chicha-trago-0409-740x430.jpg"
-                   class="img-fluid portrait-img" alt="pollo al curry">
-            </td>
-          </tr>
+          <tbody id="table-body">
+
           </tbody>
         </table>
       </div>
