@@ -1,4 +1,4 @@
-import {queryId} from './utils.js'
+import {queryId} from '../utils.js'
 
 
 /**

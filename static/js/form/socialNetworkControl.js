@@ -1,4 +1,4 @@
-import {queryId, capitalizeString} from "./utils.js"
+import {queryId, capitalizeString} from "../utils.js"
 import {isRequired, showError, showSuccess} from "./checkUtils.js";
 
 /**

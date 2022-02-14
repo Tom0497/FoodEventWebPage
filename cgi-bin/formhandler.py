@@ -3,7 +3,6 @@
 
 import re
 from cgi import FieldStorage
-from collections import defaultdict
 from typing import Dict, Tuple, List
 
 from conf import host, user, password, database, emailregex, phoneregex, datetimeformat
@@ -12,42 +11,78 @@ from utils import datetime_has_format, dates_are_ordered, check_image, check_soc
 
 
 class FormHandler:
+    """
+    Handler for data submitted through a POST request.
+
+    This class provides functionality for receiving data from a POST
+    request as a cgi FieldStorge. It expects certain fields of information
+    with fixed key names, and for each one of them performs a checking of
+    their input validity, given that data came from user input and, therefore
+    cannot be trusted.
+
+    Establish connection with database in order to retrieve valid types for
+    some input fields, and once the server validation has returned a positive
+    outcome, submits POST data to database handler for its saving into the
+    database.
+
+    In case of finding errors in one or more input fields, messages detailing
+    these errors are grouped as a response to front-end in order to instruct
+    user to correct data and try to submit again.
+    """
+
     def __init__(self, post_data: FieldStorage):
+        f"""
+        Constructor for FormHandler class.
+
+        :param post_data:
+            data submitted to a cgi script, expected a cgi FieldStorage.
+        """
+
         # post data and transformation to dict
-        self.post_data = post_data
-        self.dict_data = self._cgi_to_dict()
+        self._post_data = post_data
 
         # database connection
-        self.db = EventDatabase(host=host,
-                                user=user,
-                                password=password,
-                                database=database)
+        self._db = EventDatabase(host=host,
+                                 user=user,
+                                 password=password,
+                                 database=database)
 
         # valid regions, comunas, food types, and social networks
-        self.valid_regions = self.db.get_regions(name_only=True)
-        self.valid_comunas = self.db.get_comunas(name_only=True)
-        self.valid_food_types = self.db.get_food_types()
-        self.valid_social_networks = self.db.get_social_networks()
+        self._valid_regions = self._db.get_regions(name_only=True)
+        self._valid_comunas = self._db.get_comunas(name_only=True)
+        self._valid_food_types = self._db.get_food_types()
+        self._valid_social_networks = self._db.get_social_networks()
 
         # validation response
-        self.form_valid, self.form_check = self._check_data()
-        if self.form_valid:
-            self.ok_status_db = self.db.register_event(self.post_data)
+        self._form_valid, self._form_check = self._check_data()
+        self._ok_status_db = self._db.register_event(self._post_data) if self._form_valid else False
 
-    def _cgi_to_dict(self) -> Dict:
-        datadict = {}
-        for key in self.post_data.keys():
-            if key in ['foto-comida', 'red-social']:
-                datadict[key] = self.post_data.getlist(key=key)
-            else:
-                datadict[key] = self.post_data.getfirst(key=key, default="")
-        for key, value in datadict.items():
-            if value is None:
-                datadict[key] = ""
+    @property
+    def response(self) -> Tuple[bool, Dict]:
+        """
+        :return:
+            property returning handler response after checking POST data.
+        """
 
-        return defaultdict(lambda: '', datadict)
+        return self._ok_status_db, self._form_check
+
+    @property
+    def db_saved(self) -> bool:
+        """
+        :return:
+            property returning whether database was able to correctly save POST data.
+        """
+
+        return self._ok_status_db
 
     def _check_data(self) -> Tuple[bool, Dict]:
+        """
+        Validate POST data, and generate messages in case of errors.
+
+        :return:
+            bool - whether POST data is server valid. <br>
+            dict - response for every input validation.
+        """
 
         region_valid = self.__check_region()
         comuna_valid = self.__check_comuna()
@@ -99,11 +134,17 @@ class FormHandler:
         )
 
     def __check_region(self) -> Tuple[bool, str]:
-        region = self.dict_data.get('region')
+        """
+        :return:
+            bool - whether region submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        region = self._post_data.getfirst('region', '')
         valid = False
         message = ''
 
-        if region in self.valid_regions:
+        if region in self._valid_regions:
             valid = True
         elif region == '':
             message = 'Debe seleccionar una región.'
@@ -113,16 +154,22 @@ class FormHandler:
         return valid, message
 
     def __check_comuna(self) -> Tuple[bool, str]:
-        comuna = self.dict_data.get('comuna')
+        """
+        :return:
+            bool - whether comuna submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        comuna = self._post_data.getfirst('comuna', '')
         valid = False
         message = ''
 
-        region = self.dict_data.get('region')
+        region = self._post_data.getfirst('region', '')
         region_valid = self.__check_region()[0]
 
         if not region_valid:
             message = 'Chequear región.'
-        elif comuna in self.valid_comunas[self.valid_regions.index(region)]:
+        elif comuna in self._valid_comunas[self._valid_regions.index(region)]:
             valid = True
         elif comuna == '':
             message = 'Debe seleccionar una comuna.'
@@ -132,7 +179,13 @@ class FormHandler:
         return valid, message
 
     def __check_sector(self) -> Tuple[bool, str]:
-        sector = self.dict_data.get('sector')
+        """
+        :return:
+            bool - whether sector submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        sector = self._post_data.getfirst('sector', '')
         valid = False
         message = ''
 
@@ -144,7 +197,13 @@ class FormHandler:
         return valid, message
 
     def __check_name(self) -> Tuple[bool, str]:
-        name = self.dict_data.get('nombre')
+        """
+        :return:
+            bool - whether name submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        name = self._post_data.getfirst('nombre', '')
         valid = False
         message = ''
 
@@ -158,7 +217,13 @@ class FormHandler:
         return valid, message
 
     def __check_email(self) -> Tuple[bool, str]:
-        email = self.dict_data.get('email')
+        """
+        :return:
+            bool - whether email submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        email = self._post_data.getfirst('email', '')
         valid = False
         message = ''
 
@@ -174,7 +239,13 @@ class FormHandler:
         return valid, message
 
     def __check_phone_number(self) -> Tuple[bool, str]:
-        phone_number = self.dict_data.get('celular')
+        """
+        :return:
+            bool - whether phone number submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        phone_number = self._post_data.getfirst('celular', '')
         valid = False,
         message = ''
 
@@ -190,7 +261,13 @@ class FormHandler:
         return valid, message
 
     def __check_description(self) -> Tuple[bool, str]:
-        description = self.dict_data.get('descripcion-evento')
+        """
+        :return:
+            bool - whether event description submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        description = self._post_data.getfirst('descripcion-evento', '')
         valid = False
         message = ''
 
@@ -202,11 +279,17 @@ class FormHandler:
         return valid, message
 
     def __check_food_type(self) -> Tuple[bool, str]:
-        food_type = self.dict_data.get('tipo-comida')
+        """
+        :return:
+            bool - whether event food type submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        food_type = self._post_data.getfirst('tipo-comida', '')
         valid = False
         message = ''
 
-        if food_type in self.valid_food_types:
+        if food_type in self._valid_food_types:
             valid = True
         elif food_type == '':
             message = 'Debe seleccionar un tipo de comida.'
@@ -216,7 +299,13 @@ class FormHandler:
         return valid, message
 
     def __check_open_date(self) -> Tuple[bool, str]:
-        open_date = self.dict_data.get('dia-hora-inicio')
+        """
+        :return:
+            bool - whether event start date submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        open_date = self._post_data.getfirst('dia-hora-inicio', '')
         valid = False
         message = ''
 
@@ -230,8 +319,14 @@ class FormHandler:
         return valid, message
 
     def __check_close_date(self) -> Tuple[bool, str]:
-        open_date = self.dict_data.get('dia-hora-inicio')
-        close_date = self.dict_data.get('dia-hora-termino')
+        """
+        :return:
+            bool - whether event end date submitted is valid. <br>
+            str  - message in case of invalid input.
+        """
+
+        open_date = self._post_data.getfirst('dia-hora-inicio', '')
+        close_date = self._post_data.getfirst('dia-hora-termino', '')
         valid = False
         message = ''
 
@@ -251,11 +346,17 @@ class FormHandler:
         return valid, message
 
     def __check_images(self) -> Tuple[bool, List[Tuple[bool, str]]]:
+        """
+        :return:
+            bool - whether all images submitted are valid. <br>
+            list - list of (bool, str) tuples response for each image.
+        """
+
         total_valid = True
         response = []
 
-        if 'foto-comida' in self.post_data:
-            images = self.post_data['foto-comida']
+        if 'foto-comida' in self._post_data:
+            images = self._post_data['foto-comida']
             if not isinstance(images, list):
                 images = [images]
         else:
@@ -269,19 +370,25 @@ class FormHandler:
         return total_valid, response
 
     def __check_social_networks(self) -> Tuple[bool, List[Tuple[bool, str]]]:
+        """
+        :return:
+            bool - whether all social networks urls submitted are valid. <br>
+            list - list of (bool, str) tuples response for each social network url.
+        """
+
         total_valid = True
         response = []
 
-        social_networks = self.dict_data.get('red-social', None)
+        social_networks = self._post_data.getlist('red-social')
         already_considered = []
 
-        if not social_networks:
+        if len(social_networks) == 0:
             return total_valid, response
 
         for social_network in social_networks:
             valid, message, sn = check_social_network_link(social_network,
                                                            already_considered,
-                                                           self.valid_social_networks)
+                                                           self._valid_social_networks)
 
             total_valid = total_valid and valid
             response.append((valid, message))

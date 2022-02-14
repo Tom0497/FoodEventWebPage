@@ -1,4 +1,4 @@
-import {DateTime} from "../../vendor/luxon/luxon.min.js"
+import {DateTime} from "../vendor/luxon/luxon.min.js"
 
 
 /**
@@ -62,11 +62,20 @@ export const queryId = (idStr) => document.getElementById(idStr)
 /**
  * Async function to fetch a JSON file with a specified path passed as a string param.
  * <br>
- * @param jsonPath{string} - path to JSON file
+ * @param params{Object} - path to JSON file
  * @returns {Promise<any>} - fetch promise response
  */
-export const fetchJSON = async (jsonPath) => {
-  const response = await fetch(jsonPath);
+export const fetchDataAPI = async (params) => {
+  const
+      baseURL = window.location.origin,
+      cgiScriptURL = 'dataAPI.py'
+  const
+      requestURL = `${baseURL}/cgi-bin/${cgiScriptURL}`
+
+  let url = new URL(requestURL)
+  url.search = new URLSearchParams(params).toString()
+
+  const response = await fetch(url.toString());
   if (!response.ok) {
     const message = `An error has occured: ${response.status}`;
     throw new Error(message);
@@ -81,7 +90,10 @@ export const fetchJSON = async (jsonPath) => {
  * @returns {Promise<*[][]>} - An array for regions and one for comunas, as a Promise.
  */
 export const getRegionsAndComunas = async () => {
-  const chileDataJSON = await fetchJSON('../../../cgi-bin/chile_data.py')
+  const params = {
+    type: 'regions-comunas'
+  }
+  const chileDataJSON = await fetchDataAPI(params)
 
   const
       regiones = chileDataJSON['regions'],
@@ -97,7 +109,10 @@ export const getRegionsAndComunas = async () => {
  * @returns {Promise<*[]>} - Array of food types as a Promise.
  */
 export const getFoodTypes = async () => {
-  return await fetchJSON('../../../cgi-bin/food_types.py')
+  const params = {
+    type: 'food-types'
+  }
+  return await fetchDataAPI(params)
 }
 
 
@@ -107,7 +122,10 @@ export const getFoodTypes = async () => {
  * @returns {Promise<*[]>} - Array of social networks names as a Promise.
  */
 export const getSocialNetworks = async () => {
-  return await fetchJSON('../../cgi-bin/social_networks.py')
+  const params = {
+    type: 'social-networks'
+  }
+  return await fetchDataAPI(params)
 }
 
 
@@ -156,7 +174,7 @@ export const debounce = (fn, delay = 500) => {
 
 
 /**
- * Construct bootstrap modals used in form page
+ * Construct bootstrap modals used in form page.
  * <br>
  * @return {[BootstrapModal,BootstrapModal]} - confirmation and success modals
  */
@@ -208,3 +226,34 @@ export const submitForm = async (form) => {
  * @return {string} - capitalized string.
  */
 export const capitalizeString = (variable) => variable.charAt(0).toUpperCase() + variable.slice(1)
+
+
+/**
+ * Async function to fetch food types from JSON file.
+ * <br>
+ * @param limit{Number} - Number of events to retrieve.
+ * @returns {Promise<*[]>} - Array of food types as a Promise.
+ */
+export const getLastEvents = async (limit) => {
+  const params = {
+    type: 'events',
+    limit: limit.toString()
+  }
+
+  return await fetchDataAPI(params)
+}
+
+/**
+ * Async function to fetch food types from JSON file.
+ * <br>
+ * @returns {Promise<*[]>} - Array of food types as a Promise.
+ */
+export const getEvents = async (limit, offset) => {
+  const params = {
+    type: 'events'
+  }
+  if (limit) params.limit = limit
+  if (offset) params.offset = offset
+
+  return await fetchDataAPI(params)
+}

@@ -1,4 +1,4 @@
-import {queryId} from "./utils.js";
+import {queryId} from "../utils.js";
 import {isBetween, isPicExtValid, isRequired, showError, showSuccess} from "./checkUtils.js";
 
 
@@ -104,8 +104,8 @@ export const checkImages = (imagesInputList) => {
 const checkImage = (imageInput) => {
   let valid = false
   const
-      minSize = 5000,
-      maxSize = 2000000;
+      minSize = 5 * 1024,
+      maxSize = 2 * 1024 * 1024;
 
   if (imageInput.files.length === 0) {
     showError(imageInput, 'Debe subir una imagen.')
@@ -121,7 +121,7 @@ const checkImage = (imageInput) => {
     } else if (!isPicExtValid(imageName)) {
       showError(imageInput, 'Extensión del archivo debe ser (.jpg .jpeg .png).')
     } else if (!isBetween(imageSize, minSize, maxSize)) {
-      showError(imageInput, `El tamaño del archivo debe estar entre ${minSize / 1000} KB y ${maxSize / 1000000} MB.`)
+      showError(imageInput, `El tamaño del archivo debe estar entre ${minSize / 1024} KB y ${maxSize / (1024 * 1024)} MB.`)
     } else {
       showSuccess(imageInput)
       valid = true

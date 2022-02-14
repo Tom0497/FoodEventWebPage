@@ -14,7 +14,7 @@ import {
   queryId,
   queryName,
   submitForm
-} from "./utils.js"
+} from "../utils.js"
 import {regionAndComunasSelect} from "./regionSelector.js"
 import {foodTypesSelect} from "./foodTypeSelector.js"
 import {
@@ -35,18 +35,18 @@ import {checkSocialNetworks, socialNetworkSelect} from "./socialNetworkControl.j
 import {showError, showSuccess} from "./checkUtils.js";
 
 /**
- * Modals used or confirmation and success messages when submitting form.
+ * Modals used for confirmation and success messages when submitting form.
  */
 let [confirmationModal, successModal] = getFormModals()
 
 /**
- * Button to confirm data submitting
+ * Button to confirm data submitting.
  * @type {HTMLElement|InputFields|HTMLFormElement}
  */
 let sendButton = queryId('send-confirm-btn')
 
 /**
- * Query every single input field from document form
+ * Query every single input field from document form.
  * @type {HTMLElement|InputFields|HTMLFormElement}
  */
 let eventForm = queryId('formulario'),
@@ -62,79 +62,84 @@ let eventForm = queryId('formulario'),
     eventFoodType = queryId('tipo-comida')
 
 /**
- * Query image input list
+ * Query image input list.
  * @type {NodeListOf<HTMLElement|InputFields>}
  */
 let eventImages = queryName('foto-comida')
 
 /**
- * Query social networks input list
+ * Query social networks input list.
  * @type {NodeListOf<HTMLElement|InputFields>}
  */
 let contactSocialNetworks = queryName('red-social')
 
 
-Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()]).then(response => {
-  let
-      [[validRegions,
-        validComunas],
+/**
+ * Control form input and form submitting to server.
+ * <br>
+ * @return {Promise<void>}
+ */
+const handleForm = async () => {
+  const  // fetch data from server to construct selects
+      [[validRegions, validComunas],
         validFoodTypes,
-        socialNetworks] = response
+        socialNetworks] = await Promise.all([getRegionsAndComunas(), getFoodTypes(), getSocialNetworks()])
 
-  // display regions and comunas options
-  regionAndComunasSelect(validRegions, validComunas)
-  // social networks options and control
-  socialNetworkSelect(socialNetworks)
-  // display food types options
-  foodTypesSelect(validFoodTypes)
-  // pre-fill datetime fields with default values
-  defaultDates(eventOpenDate, eventCloseDate)
-  // activate instant single input validation
-  activateInstantInputValidation(validRegions, validComunas, validFoodTypes)
+  regionAndComunasSelect(validRegions, validComunas)  // display regions and comunas options
+  socialNetworkSelect(socialNetworks)  // social networks options and control
+  foodTypesSelect(validFoodTypes)  // display food types options
+  defaultDates(eventOpenDate, eventCloseDate)  // pre-fill datetime fields with default values
+  activateInstantInputValidation(validRegions, validComunas, validFoodTypes)  // activate instant single input validation
 
   /**
    * Form validity client-side and server-side.
    * @type {boolean}
    */
-  let
-      isFormValid = false,
-      serverValid = false
+  let isFormValid = false
 
   /**
    * Listener to validate form client-side before submitting to server.
    */
   eventForm.addEventListener('submit', (event) => {
-    // prevent the form from automatically submitting
-    event.preventDefault();
 
-    // validate every input client-side
-    isFormValid = validateForm(validRegions, validComunas, validFoodTypes)
+    event.preventDefault()  // prevent the form from automatically submitting
+    isFormValid = validateForm(validRegions, validComunas, validFoodTypes)  // validate every input client-side
 
-    // submit to the server if the form is client-side valid
-    if (isFormValid) confirmationModal.show()
+    if (isFormValid) confirmationModal.show()  // submit to the server if the form is client-side valid
   })
 
   /**
    * Listener to submit form to server and handle its response.
    */
   sendButton.addEventListener('click', (_) => {
-    // submit form to server only if is valid client-side
-    if (isFormValid) {
-      submitForm(eventForm)
-          .then(
-              // pass server response to handler
-              response => serverValid = handleServerResponse(response)
-          )
-          .then(_ => {
-            confirmationModal.hide()
-
-            // if server validated form, show success modal
-            if (serverValid) successModal.show()
-            else isFormValid = false
-          })
-    }
+    if (isFormValid)  // submit form to server only if is valid client-side
+      handleSubmitForm(eventForm).then(
+          response => isFormValid = response  // check form validity server-side
+      )
   })
-})
+}
+
+
+/**
+ * Perform form submit to server and handle its response.
+ * <br>
+ * @param eventForm{HTMLFormElement} - element containing form data.
+ * @return {Promise<boolean>} - whether server validated and saved data submitted.
+ */
+const handleSubmitForm = async (eventForm) => {
+  const [serverOK, response] = await submitForm(eventForm)
+  const serverValid = handleServerResponse(response)
+
+  if (!serverValid) {
+    confirmationModal.hide()
+    return false
+  }
+  while (!serverOK)
+    [serverOK, _] = await submitForm(eventForm)
+
+  successModal.show()
+  return true
+}
 
 
 /**
@@ -279,3 +284,9 @@ const activateInstantInputValidation = (validRegions, validComunas, validFoodTyp
     }
   }))
 }
+
+
+/**
+ * Call async function that controls form.
+ */
+handleForm().then()

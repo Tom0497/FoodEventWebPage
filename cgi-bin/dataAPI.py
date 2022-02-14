@@ -5,14 +5,14 @@ import cgi
 import cgitb
 import json
 
-from formhandler import FormHandler
+from urlparamhandler import URLParamHandler
 
 cgitb.enable()
 utf8stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
-form = cgi.FieldStorage(keep_blank_values=True)
-form_handler = FormHandler(post_data=form)
-response = form_handler.response
+query_params = cgi.FieldStorage()
+handler = URLParamHandler(query_params)
+response = handler.response
 
 print('Content-type: application/json; charset=UTF-8')
 print('')
