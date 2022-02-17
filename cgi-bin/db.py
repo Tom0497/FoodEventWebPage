@@ -106,7 +106,7 @@ class EventDatabase:
             'data': cleaned_events
         }
 
-    def get_events_by_comuna(self, comuna_name: str) -> Dict:
+    def get_events_by_comuna(self, comuna_name: Optional[str]) -> Dict:
         """
         Retrieve events from database that take place in a specific comuna.
 
@@ -130,6 +130,31 @@ class EventDatabase:
         return {
             'count': self.event_count,
             'data': cleaned_events
+        }
+
+    def get_event_by_id(self, event_id: Optional[int]):
+        """
+        Retrieve event from database that has a specific id.
+
+        :param event_id:
+            id of event searched in db.
+
+        :return:
+            data of event cleaned for readability.
+        """
+
+        valid_ids = self.get_events_ids()
+        flatten_ids = [event_id for event in valid_ids for event_id in event]  # flatten list
+
+        if not (event_id and event_id in flatten_ids):  # check if id is not None and is valid
+            return {'response': 'Debe ingresar un id valido'}
+
+        db_event = self._static_query(qr.event_by_id(event_id=event_id))
+        cleaned_event = self.__get_cleaned_events(db_event)
+
+        return {
+            'count': self.event_count,
+            'data': cleaned_event
         }
 
     def __get_cleaned_events(self, db_events: List[Tuple]) -> List[Dict]:
@@ -253,6 +278,15 @@ class EventDatabase:
                 comunas[region_idx].append(comuna[1])  # consider name only for comuna
 
         return comunas
+
+    def get_events_ids(self):
+        """
+        :return:
+            ids from events registered in db.
+        """
+
+        ids = self._static_query(qr.events_ids)
+        return ids
 
     def get_image_count_per_comuna(self):
         """

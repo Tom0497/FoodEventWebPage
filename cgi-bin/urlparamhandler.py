@@ -13,6 +13,7 @@ request_types = ['regions-comunas',
                  'social-networks',
                  'comunas-images',
                  'events-comuna',
+                 'event',
                  'events']
 
 
@@ -54,6 +55,7 @@ class URLParamHandler:
         limit = self._params.getfirst('limit', None)
         offset = self._params.getfirst('offset', None)
         comuna = self._params.getfirst('comuna', None)
+        event_id = self._params.getfirst('id', None)
 
         if request not in request_types:  # limited types of request permitted
             request = None
@@ -62,7 +64,8 @@ class URLParamHandler:
             'type': request,
             'limit': limit,
             'offset': offset,
-            'comuna': comuna
+            'comuna': comuna,
+            'event_id': event_id
         }
 
     def __resolve_request(self):
@@ -97,6 +100,11 @@ class URLParamHandler:
         if request_type == request_types[4]:  # events of a comuna
             comuna = self._request.get('comuna')
             return self._db.get_events_by_comuna(comuna_name=comuna)
+
+        if request_type == request_types[5]:  # event data by id
+            event_id_str = self._request.get('event_id')
+            event_id = int(event_id_str) if event_id_str else None
+            return self._db.get_event_by_id(event_id=event_id)
 
         # events data with optional limit and offset
         request_limit = self._request.get('limit')

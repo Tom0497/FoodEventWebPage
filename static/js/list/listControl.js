@@ -1,4 +1,4 @@
-import {capitalizeString, getEvents, queryId} from "../utils.js"
+import {capitalizeString, getEventById, getEvents, queryId} from "../utils.js"
 
 /**
  * Page base URL to construct absolute paths.
@@ -37,6 +37,25 @@ let eventModal =
           backdrop: 'static',
           keyboard: false
         })
+
+
+/**
+ * Control event data modal display when called by URL param with ID.
+ * <br>
+ * @return {Promise<void>}
+ */
+const handleURLParams = async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const eventId = parseInt(urlParams.get('event-id'))
+
+  console.log({eventId})
+  if (!eventId || isNaN(eventId)) return
+
+  const {data: eventData} = await getEventById(eventId)
+  if (!eventData) return
+
+  showEventModal(eventData[0])
+}
 
 
 /**
@@ -262,6 +281,12 @@ const showPage = (events) => {
   )
   tableBody.innerHTML = tableContent
 }
+
+
+/**
+ * Call async function that handle event call by url param.
+ */
+handleURLParams().then()
 
 
 /**

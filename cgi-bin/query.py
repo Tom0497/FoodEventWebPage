@@ -24,6 +24,10 @@ FROM evento ev, comuna co, foto fo
 WHERE ev.comuna_id=co.id AND fo.evento_id=ev.id
 GROUP BY co.nombre
 """
+events_ids = """
+SELECT id
+FROM evento
+"""
 
 
 def column_type(db: str, table: str, column: str) -> str:
@@ -58,6 +62,16 @@ def events_by_comuna_id(comuna_id: int) -> str:
     FROM evento
     WHERE comuna_id={comuna_id}
     ORDER BY dia_hora_inicio DESC
+    """
+
+    return query
+
+
+def event_by_id(event_id: int) -> str:
+    query = f"""
+    SELECT id, comuna_id, sector, nombre, email, celular, dia_hora_inicio, dia_hora_termino, descripcion, tipo
+    FROM evento
+    WHERE id={event_id}
     """
 
     return query

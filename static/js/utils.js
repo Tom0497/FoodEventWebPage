@@ -283,6 +283,11 @@ export const getEvents = async (limit, offset) => {
 }
 
 
+/**
+ * Get number of images reported for events in comunas of Chile.
+ * <br>
+ * @return {Promise<*>} - Tuples of comunas and number of images.
+ */
 export const getImageCountPerComuna = async () => {
   const params = {
     type: 'comunas-images'
@@ -309,11 +314,28 @@ export const getComunasXY = async () => {
 /**
  * Get all images event related to a
  * @param comuna{string}
+ * @return {Promise<*>} - Array containing events data.
  */
 export const getEventsOfComuna = async (comuna) => {
   const params = {
     type: 'events-comuna',
     comuna: comuna
+  }
+
+  return await fetchDataAPI(params)
+}
+
+
+/**
+ * Get event data specified by an ID.
+ * <br>
+ * @param eventId{Number} - Integer expected to represent an event ID.
+ * @return {Promise<*>} - Array containing event data.
+ */
+export const getEventById = async (eventId) => {
+  const params = {
+    type: 'event',
+    id: eventId
   }
 
   return await fetchDataAPI(params)
