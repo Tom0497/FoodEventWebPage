@@ -1,4 +1,5 @@
 import {DateTime} from "../vendor/luxon/luxon.min.js"
+import {stringSimilarity} from "../vendor/stringSimilarity/string-similarity.js";
 
 
 /**
@@ -229,6 +230,29 @@ export const capitalizeString = (variable) => variable.charAt(0).toUpperCase() +
 
 
 /**
+ * Compare if two string are similar enough based on a minimum score.
+ * <br>
+ * The underlying function computes a similarity score based on the
+ * Sorensen-Dice coefficient, which range from 0 to 1. A minimum value
+ * for this similarity score is set in order to define two strings as
+ * similar enough.
+ * <br>
+ * @param str1{string} - A string to be compared.
+ * @param str2{string} - Another string to be compared.
+ * @return {boolean} - whether strings are similar enough.
+ */
+export const stringAreSimilar = (str1, str2) => {
+  const minSimilarityScore = .8 // minimum similarity score
+  const  // normalize words (i.e. remove accents and diacritics)
+      str1Normalized = str1.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+      str2Normalized = str2.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  const similarityScore = stringSimilarity(str1Normalized, str2Normalized)  // compute similarity score (case insensitive)
+
+  return similarityScore > minSimilarityScore
+}
+
+
+/**
  * Async function to fetch food types from JSON file.
  * <br>
  * @param limit{Number} - Number of events to retrieve.
@@ -254,6 +278,43 @@ export const getEvents = async (limit, offset) => {
   }
   if (limit) params.limit = limit
   if (offset) params.offset = offset
+
+  return await fetchDataAPI(params)
+}
+
+
+export const getImageCountPerComuna = async () => {
+  const params = {
+    type: 'comunas-images'
+  }
+
+  return await fetchDataAPI(params)
+}
+
+
+/**
+ * Get comunas latitude and longitude for leaflet map.
+ * <br>
+ * @return {Promise<any>}
+ */
+export const getComunasXY = async () => {
+  const baseURL = window.location.origin
+  const jsonPath = `${baseURL}/static/json/chile.json`
+  const comunasXYJSON = await fetch(jsonPath)
+
+  return await comunasXYJSON.json()
+}
+
+
+/**
+ * Get all images event related to a
+ * @param comuna{string}
+ */
+export const getEventsOfComuna = async (comuna) => {
+  const params = {
+    type: 'events-comuna',
+    comuna: comuna
+  }
 
   return await fetchDataAPI(params)
 }

@@ -99,6 +99,49 @@ class EventDatabase:
         """
 
         db_events = self._static_query(qr.events(limit=limit, offset=offset))  # query events from db
+        cleaned_events = self.__get_cleaned_events(db_events)  # clean and order events data
+
+        return {
+            'count': self.event_count,
+            'data': cleaned_events
+        }
+
+    def get_events_by_comuna(self, comuna_name: str) -> Dict:
+        """
+        Retrieve events from database that take place in a specific comuna.
+
+        :param comuna_name:
+            comuna's name where events are queried.
+
+        :return:
+            all events data reported for a certain comuna.
+        """
+
+        valid_comunas = self.get_comunas(name_only=True)  # get valid comunas
+        flatten_comunas = [comuna for region_comunas in valid_comunas for comuna in region_comunas]  # flatten list
+
+        if not (comuna_name and comuna_name in flatten_comunas):  # check if name is not None and is valid
+            return {'response': 'Debe ingresar un nombre de comuna válido.', 'comunas': flatten_comunas}
+
+        comuna_id = self._static_query(qr.comuna_id_by_name(comuna_name=comuna_name))[0][0]
+        db_events = self._static_query(qr.events_by_comuna_id(comuna_id))
+        cleaned_events = self.__get_cleaned_events(db_events)
+
+        return {
+            'count': self.event_count,
+            'data': cleaned_events
+        }
+
+    def __get_cleaned_events(self, db_events: List[Tuple]) -> List[Dict]:
+        """
+        Get events data in a cleaner manner.
+
+        :param db_events:
+            events data retrieved directly from db.
+
+        :return:
+            all data concerning events queried, as a dictionary for readability.
+        """
 
         cleaned_events = []
         for event in db_events:
@@ -134,10 +177,7 @@ class EventDatabase:
                 'foto-comida': temp_images
             })
 
-        return {
-            'count': self.event_count,
-            'data': cleaned_events
-        }
+        return cleaned_events
 
     @property
     def event_count(self) -> int:
@@ -213,6 +253,15 @@ class EventDatabase:
                 comunas[region_idx].append(comuna[1])  # consider name only for comuna
 
         return comunas
+
+    def get_image_count_per_comuna(self):
+        """
+        :return:
+            image count from events per comuna.
+        """
+
+        comunas_and_images = self._static_query(qr.comunas_and_images)
+        return comunas_and_images
 
     def register_event(self, postdata: FieldStorage) -> bool:
         """

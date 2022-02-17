@@ -3,10 +3,17 @@
 
 from cgi import FieldStorage
 from typing import Dict, Union
+
 from conf import host, user, password, database
 from db import EventDatabase
 
-request_types = ['regions-comunas', 'food-types', 'social-networks', 'events']
+# allowed request types
+request_types = ['regions-comunas',
+                 'food-types',
+                 'social-networks',
+                 'comunas-images',
+                 'events-comuna',
+                 'events']
 
 
 class URLParamHandler:
@@ -46,6 +53,7 @@ class URLParamHandler:
         request = self._params.getfirst('type', None)
         limit = self._params.getfirst('limit', None)
         offset = self._params.getfirst('offset', None)
+        comuna = self._params.getfirst('comuna', None)
 
         if request not in request_types:  # limited types of request permitted
             request = None
@@ -53,7 +61,8 @@ class URLParamHandler:
         return {
             'type': request,
             'limit': limit,
-            'offset': offset
+            'offset': offset,
+            'comuna': comuna
         }
 
     def __resolve_request(self):
@@ -81,6 +90,13 @@ class URLParamHandler:
 
         if request_type == request_types[2]:  # social networks
             return self._db.get_social_networks()
+
+        if request_type == request_types[3]:  # image count per comuna
+            return self._db.get_image_count_per_comuna()
+
+        if request_type == request_types[4]:  # events of a comuna
+            comuna = self._request.get('comuna')
+            return self._db.get_events_by_comuna(comuna_name=comuna)
 
         # events data with optional limit and offset
         request_limit = self._request.get('limit')
