@@ -63,8 +63,10 @@ const handleURLParams = async () => {
  * @return {Promise<void>}
  */
 const controlEventTable = async () => {
+  let currentEvents
   const {count: eventCount, data: events} = await getEvents(eventsPerPage, 0)  // fetch events
   console.log({eventCount, events})
+  currentEvents = events
 
   const pageCount = Math.ceil(eventCount / eventsPerPage)  // number of page for table
   for (let pageNumber = 0; pageNumber < pageCount; pageNumber++) {
@@ -97,7 +99,8 @@ const controlEventTable = async () => {
             response => {
               const {count: eventCount, data: events} = response
               console.log({eventCount, events})
-              showPage(events)
+              currentEvents = events
+              showPage(currentEvents)
               currentPage = selectedPage
             }
         )
@@ -116,7 +119,7 @@ const controlEventTable = async () => {
     let rowElement = element.parentElement
     const selectedEventIdx = parseInt(rowElement.id.replace('row-', ''))
     console.log({currentPage, selectedEventIdx})
-    showEventModal(events[selectedEventIdx])
+    showEventModal(currentEvents[selectedEventIdx])
   })
 
   /**

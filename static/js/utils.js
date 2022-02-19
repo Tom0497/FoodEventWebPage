@@ -340,3 +340,45 @@ export const getEventById = async (eventId) => {
 
   return await fetchDataAPI(params)
 }
+
+
+/**
+ * Get event count per day, considering its start date.
+ * <br>
+ * @return {Promise<*>} - Array containing event count.
+ */
+export const getEventCountPerDay = async () => {
+  const params = {
+    type: 'events-per-day'
+  }
+
+  return await fetchDataAPI(params)
+}
+
+
+/**
+ * Get event count per food type.
+ * <br>
+ * @return {Promise<*>} - Array containing event count.
+ */
+export const getEventCountByType = async () => {
+  const params = {
+    type: 'events-per-type'
+  }
+
+  return await fetchDataAPI(params)
+}
+
+
+/**
+ * Get event count per month, grouped by daytime of event start.
+ * <br>
+ * @return {Promise<*>}
+ */
+export const getEventCountByMonthAndDayTime = async () => {
+  const params = {
+    type: 'events-month-daytime'
+  }
+
+  return await fetchDataAPI(params)
+}

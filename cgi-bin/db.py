@@ -4,9 +4,11 @@
 import hashlib
 import os
 from cgi import FieldStorage
+from datetime import datetime
 from pathlib import Path
 from typing import List, Tuple, Any, Union, Dict, Optional
 from urllib.parse import urlparse
+from copy import deepcopy
 
 import mysql.connector
 
@@ -296,6 +298,68 @@ class EventDatabase:
 
         comunas_and_images = self._static_query(qr.comunas_and_images)
         return comunas_and_images
+
+    def get_event_count_by_start_date(self):
+        """
+        :return:
+            number of events grouped by starting date.
+        """
+
+        dates_and_count = self._static_query(qr.events_by_start_date)
+        return dates_and_count
+
+    def get_event_count_by_food_type(self):
+        """
+        :return:
+            number of events per food type.
+        """
+
+        events_per_food_type = self._static_query(qr.events_by_food_type)
+        return events_per_food_type
+
+    def get_event_count_by_month(self):
+        """
+        :return:
+            number if events per month, and separated by daytime of occurrence (early, midday, evening)
+        """
+
+        # query events by daytime and month
+        early_events = self._static_query(qr.events_by_month_between_timeframe('00:01', '10:59'))
+        midday_events = self._static_query(qr.events_by_month_between_timeframe('11:00', '14:59'))
+        evening_events = self._static_query(qr.events_by_month_between_timeframe('15:00', '23:59'))
+
+        # get months from query responses
+        early_months = [month for month, _ in early_events]
+        midday_months = [month for month, _ in midday_events]
+        evening_months = [month for month, _ in evening_events]
+
+        # obtain list of months with no duplicates and sorted
+        months_duplicated = early_months + midday_months + evening_months
+        months = deepcopy(list(set(months_duplicated)))
+        months.sort(key=lambda date: datetime.strptime(date, '%Y-%m'))
+
+        early = []
+        midday = []
+        evening = []
+
+        for i, month in enumerate(months):  # cycle to fill months daytimes with 0 events
+            if month not in early_months:
+                early_events.insert(i, (month, 0))
+            if month not in midday_months:
+                midday_events.insert(i, (month, 0))
+            if month not in evening_months:
+                evening_events.insert(i, (month, 0))
+
+            early.append(early_events[i][1])
+            midday.append(midday_events[i][1])
+            evening.append(evening_events[i][1])
+
+        return {  # every list of response should have same length
+            'months': months,
+            'early': early,
+            'midday': midday,
+            'evening': evening
+        }
 
     def register_event(self, postdata: FieldStorage) -> bool:
         """

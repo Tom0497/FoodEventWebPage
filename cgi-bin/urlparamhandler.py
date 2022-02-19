@@ -14,6 +14,9 @@ request_types = ['regions-comunas',
                  'comunas-images',
                  'events-comuna',
                  'event',
+                 'events-per-day',
+                 'events-per-type',
+                 'events-month-daytime',
                  'events']
 
 
@@ -105,6 +108,15 @@ class URLParamHandler:
             event_id_str = self._request.get('event_id')
             event_id = int(event_id_str) if event_id_str else None
             return self._db.get_event_by_id(event_id=event_id)
+
+        if request_type == request_types[6]:  # event count per starting date
+            return self._db.get_event_count_by_start_date()
+
+        if request_type == request_types[7]:  # event count per food type
+            return self._db.get_event_count_by_food_type()
+
+        if request_type == request_types[8]:  # event count per month and daytime
+            return self._db.get_event_count_by_month()
 
         # events data with optional limit and offset
         request_limit = self._request.get('limit')

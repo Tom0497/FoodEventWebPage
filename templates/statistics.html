@@ -10,13 +10,10 @@
   <link rel="stylesheet" href="../static/vendor/bootstrap/css/bootstrap.min.css">
   <script defer src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- D3.js library is used for creating and displaying charts and graphs -->
-  <script src="../static/vendor/d3/dist/d3.min.js"></script>
+  <script src="../static/vendor/highcharts/highcharts.js"></script>
 
   <!-- JS script for creating charts using D3.js -->
-  <script src="../static/js/d3_graphs/circular_plot.js"></script>
-  <script src="../static/js/d3_graphs/line_plot.js"></script>
-  <script src="../static/js/d3_graphs/bar_plot.js"></script>
+  <script type="module" src="../static/js/statistics/graphs.js"></script>
 
 </head>
 <body class="pt-3">
@@ -46,55 +43,44 @@
   </nav>
 </header>
 
-<main class="container my-5 mx-auto">
+<main class="container my-5 text-center lead">
 
   <!-- Create a div where the graph will take place -->
-  <div class="row my-5">
-    <div class="col"></div>
+  <div class="row my-5 justify-content-center">
     <div class="col-sm-12 col-md-6">
-      <h4 class="text-center">Cantidad de eventos por día</h4>
-      <p class="border border-4">
-        El gráfico de línea muestra la cantidad de eventos que hay para cada día de la semana, según los
-        datos reportados a la plataforma.
+      <h3 class="font-monospace">Cantidad de eventos por día</h3>
+      <p class="border border-4 rounded py-2 px-4">
+        El gráfico de línea muestra la cantidad de eventos por día, considerando la fecha de inicio del evento,
+        según lo reportado a la plataforma.
       </p>
-      <div id="line-graph"></div>
+      <div id="line-chart" class="mx-auto"></div>
     </div>
-    <div class="col"></div>
-  </div>
 
-  <hr>
+    <hr class="my-5">
 
-  <div class="row my-5">
-    <div class="col"></div>
     <div class="col-sm-12 col-md-6">
-      <h4 class="text-center"> Cantidad de eventos por tipo</h4>
-      <p class="border border-4">
-        El gráfico circular muestra una agrupación por tipo de los eventos que se han registrado en la
+      <h3 class="font-monospace"> Cantidad de eventos por tipo de comida</h3>
+      <p class="border border-4 rounded py-2 px-4">
+        El gráfico circular muestra una agrupación por tipo de comida de los eventos que se han registrado en la
         plataforma.
       </p>
-      <div id="circular-graph"></div>
+      <div id="pie-chart" class="mx-auto"></div>
     </div>
-    <div class="col"></div>
-  </div>
 
-  <hr>
+    <hr class="my-5">
 
-  <div class="row my-5">
-    <div class="col"></div>
     <div class="col-sm-12 col-md-6">
-      <h4 class="text-center"> Horario de eventos por mes</h4>
-      <p class="border border-4">
+      <h3 class="font-monospace"> Inicio de eventos agrupados por mes</h3>
+      <p class="border border-4 rounded py-2 px-4">
         El gráfico de barras muestra la distribución horaria de los eventos agrupados por mes, se divide el día en
-        tres categorías, eventos que inician en la mañana (rojo), al mediodía (azul) y en la tarde (verde).
+        tres tipos de eventos según su inicio: eventos que inician en la mañana (antes de las 11:00 AM),
+        al mediodía (de 11:00 AM a 14:59 PM) y en la tarde (15:00 PM en adelante).
       </p>
-      <div id="bar-chart"></div>
+      <div id="bar-chart" class="mx-auto"></div>
     </div>
-    <div class="col"></div>
   </div>
 
 </main>
 
-<!-- Script that executes all plots in page -->
-<script src="../static/js/d3_graphs/plots.js"></script>
 </body>
 </html>
